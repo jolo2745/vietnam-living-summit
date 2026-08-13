@@ -1,0 +1,154 @@
+.page {
+  --summit-cream: #f5eee7;
+  --summit-ink: #0b0b0b;
+  --summit-navy: #182838;
+  overflow: hidden;
+  background: var(--summit-ink);
+}
+
+.expatPage {
+  background: var(--summit-ink);
+}
+
+.partnerPage {
+  background: var(--summit-navy);
+}
+
+.page :global(.site-header) {
+  background: rgba(11, 11, 11, 0.88);
+}
+
+.partnerPage :global(.site-header) {
+  background: rgba(15, 28, 40, 0.9);
+}
+
+.page :global(.site-footer) {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.kicker {
+  margin: 0;
+  color: #92989b;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.kicker span {
+  margin-right: 14px;
+  color: var(--amber);
+}
+
+.sectionHeading {
+  max-width: 900px;
+}
+
+.sectionHeading h2 {
+  margin: 24px 0 0;
+  color: #ece9e4;
+  font-size: clamp(48px, 5.5vw, 82px);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+}
+
+.sectionHeading h2 em {
+  color: var(--amber);
+}
+
+.sectionHeadingInline {
+  max-width: none;
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 10%;
+  align-items: end;
+}
+
+.sectionHeadingInline > p {
+  max-width: 430px;
+  margin: 0 0 4px;
+  color: #969c9e;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.button {
+  min-height: 56px;
+  padding: 7px 8px 7px 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 44px;
+  color: #111;
+  background: var(--amber);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.button > span {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #111;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.button:hover {
+  background: var(--orange-soft);
+  transform: translateY(-2px);
+}
+
+.button:hover > span {
+  transform: rotate(45deg);
+}
+
+.buttonDark {
+  background: #111;
+  color: #fff;
+}
+
+.buttonDark > span {
+  color: #111;
+  background: var(--amber);
+}
+
+.textLink {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  color: #d5d6d3;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.textLink span {
+  color: var(--amber);
+  font-size: 14px;
+}
+
+@media (max-width: 800px) {
+  .sectionHeading h2 {
+    font-size: clamp(43px, 12vw, 62px);
+  }
+
+  .sectionHeadingInline {
+    grid-template-columns: 1fr;
+    gap: 45px;
+  }
+}
+
+@media (max-width: 480px) {
+  .button {
+    gap: 32px;
+  }
+}

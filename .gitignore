@@ -1,0 +1,23 @@
+# Dependencies and generated output
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+
+# Local Cloudflare state
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Design references and source archives are not public site assets
+public/consepts/
+public/images/*.zip
+
+# Editor and OS files
+.DS_Store
+*.log

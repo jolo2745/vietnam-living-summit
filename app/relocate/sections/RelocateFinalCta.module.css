@@ -1,0 +1,47 @@
+.finalCta {
+  padding-block: clamp(105px, 12vw, 175px);
+  color: #111;
+  background: var(--peach);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 8%;
+  align-items: end;
+}
+
+.finalCta h2 {
+  margin: 26px 0 0;
+  font-size: clamp(58px, 7vw, 105px);
+  font-weight: 500;
+  letter-spacing: -0.07em;
+  line-height: 0.9;
+}
+
+.action {
+  padding-bottom: 7px;
+}
+
+.action p {
+  max-width: 390px;
+  margin: 0 0 28px;
+  color: rgba(11, 11, 11, 0.65);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+@media (max-width: 800px) {
+  .finalCta {
+    padding-block: 90px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 45px;
+  }
+
+  .finalCta h2 {
+    font-size: clamp(52px, 14.5vw, 76px);
+  }
+}
