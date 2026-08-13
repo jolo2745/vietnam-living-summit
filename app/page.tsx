@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="gateway">
-      <section className="audience-panel people-panel">
+      <Link href="/relocate" className="audience-panel people-panel" aria-label="For people: plan your move to Vietnam">
         <Image
           src="/images/vietnam-relocation-hero.png"
           alt="A couple beginning their new life in Ho Chi Minh City"
@@ -18,11 +18,11 @@ export default function Home() {
           <p className="audience-label"><span>For people</span> Individuals · Families · Professionals</p>
           <h1>Build your life<br /><em>in Vietnam.</em></h1>
           <p>Personal, on-the-ground support from planning your move to feeling properly at home.</p>
-          <Link href="/relocate" className="arrow-link">Plan your move <span>↗</span></Link>
+          <span className="arrow-link">Plan your move <span>↗</span></span>
         </div>
-      </section>
+      </Link>
 
-      <section className="audience-panel partner-panel">
+      <Link href="/partners" className="audience-panel partner-panel" aria-label="For businesses: join the Vietnam Living Summit community">
         <Image
           src="/images/vietnam-blue-hour.png"
           alt="A business professional arriving in Ho Chi Minh City"
@@ -37,9 +37,9 @@ export default function Home() {
           <p className="audience-label"><span>For business</span> Partners · Providers · Employers</p>
           <h2>Let your business help<br /><em>build the community.</em></h2>
           <p>Join our trusted local network, support people settling in to Vietnam, and be recommended when your service is the right fit.</p>
-          <Link href="/partners" className="arrow-link">Join the community <span>↗</span></Link>
+          <span className="arrow-link">Join the community <span>↗</span></span>
         </div>
-      </section>
+      </Link>
 
     </main>
   );
