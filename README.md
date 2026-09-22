@@ -1,6 +1,22 @@
 # Vietnam Living Summit 2026
 
-Public website for Vietnam Living Summit 2026, with dedicated experiences for people relocating to Vietnam and businesses joining the TUBUDD alliance.
+A bilingual event platform connecting people building a life in Vietnam with trusted local businesses, services and communities.
+
+**[View the live website](https://vietnam-living-summit.com)**
+
+![Vietnam Living Summit](public/images/vietnam-relocation-hero.png)
+
+## What shipped
+
+- Separate relocation and business-partner journeys.
+- English and Vietnamese content with a persistent language preference.
+- Responsive event, community, industry and partner presentation.
+- An email workflow that delivers the relocation roadmap and registration link.
+- Static deployment on Cloudflare Workers with isolated shadow configuration.
+
+## Stack
+
+Next.js, React, TypeScript and Cloudflare Workers Static Assets.
 
 ## Local development
 
