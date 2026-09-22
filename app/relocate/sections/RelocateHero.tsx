@@ -1,39 +1,27 @@
-import Image from "next/image";
+"use client";
+
+import { useLanguage } from "../../i18n";
+import { attendeeRegistrationAnchor } from "../links";
 import shared from "../../components/summit/SummitShared.module.css";
 import styles from "./RelocateHero.module.css";
 
 export function RelocateHero() {
+  const { t } = useLanguage();
+
   return (
     <section className={`${styles.hero} wrap`}>
       <div className={styles.copy}>
-        <h1>Vietnam Living<br /><em>Summit 2026.</em></h1>
-        <p className={styles.lede}>The ecosystem for living, working, and growing in Vietnam.</p>
+        <h1><span className={styles.titleLine}>Vietnam Living</span><br /><em>Summit 2026.</em></h1>
+        <p className={styles.lede}>{t("The ecosystem for living, working, and growing in Vietnam.", "Hệ sinh thái dành cho cuộc sống, công việc và phát triển tại Việt Nam.")}</p>
         <div className={styles.actions}>
-          <a className={`${shared.button} ${styles.primaryButton}`} href="mailto:hello@meetannie.co?subject=Vietnam%20Living%20Summit%202026">Register interest <span>↗</span></a>
-          <a className={shared.textLink} href="#event-overview">Explore the event <span>↓</span></a>
+          <a className={`${shared.button} ${styles.primaryButton}`} href={attendeeRegistrationAnchor}>{t("Register free", "Đăng ký miễn phí")} <span>↓</span></a>
+          <a className={shared.textLink} href="#event-overview">{t("Explore the event", "Khám phá sự kiện")} <span>↓</span></a>
         </div>
         <dl className={styles.quickFacts}>
-          <div><dt>Where</dt><dd>Hanoi, Vietnam</dd></div>
-          <div><dt>Entry</dt><dd>Free for attendees</dd></div>
+          <div><dt>{t("Service sectors", "Lĩnh vực dịch vụ")}</dt><dd>14</dd></div>
+          <div><dt>{t("Clients supported", "Khách hàng được hỗ trợ")}</dt><dd>50,000+</dd></div>
+          <div><dt>{t("Trusted partners", "Đối tác đáng tin cậy")}</dt><dd>200+</dd></div>
         </dl>
-      </div>
-
-      <div className={styles.visual}>
-        <div className={styles.photo}>
-          <Image
-            src="/images/people-community.jpg"
-            alt="People meeting and building new connections at a community event"
-            fill
-            priority
-            sizes="(max-width: 800px) 100vw, 47vw"
-          />
-        </div>
-        <div className={styles.poster} aria-label="Event summary">
-          <span className={styles.posterLabel}>Vietnam&apos;s relocation ecosystem</span>
-          <strong>14</strong>
-          <p>key service <br />sectors under one roof  <br />helping you get started</p>
-        </div>
-        <div className={styles.stamp} aria-hidden="true">ARRIVE<br />READY</div>
       </div>
     </section>
   );

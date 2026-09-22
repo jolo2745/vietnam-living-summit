@@ -2,33 +2,97 @@
   --summit-cream: #f5eee7;
   --summit-ink: #0b0b0b;
   --summit-navy: #182838;
-  overflow: hidden;
-  background: var(--summit-ink);
+  overflow-x: clip;
+  background: var(--surface);
+  color: var(--ink);
 }
 
 .expatPage {
-  background: var(--summit-ink);
+  --content-section-padding: clamp(96px, 8vw, 128px);
+  background: var(--surface);
 }
 
 .partnerPage {
-  background: var(--summit-navy);
-}
-
-.page :global(.site-header) {
-  background: rgba(11, 11, 11, 0.88);
-}
-
-.partnerPage :global(.site-header) {
-  background: rgba(15, 28, 40, 0.9);
+  background: var(--surface);
 }
 
 .page :global(.site-footer) {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.floatingFormJump {
+  position: fixed;
+  right: clamp(20px, 3vw, 46px);
+  bottom: clamp(20px, 3vw, 42px);
+  z-index: 999;
+  min-height: 62px;
+  padding: 7px 7px 7px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid rgba(24, 40, 56, 0.24);
+  border-radius: var(--radius-pill);
+  color: #fff;
+  background: var(--amber);
+  box-shadow: 0 12px 30px rgba(24, 40, 56, 0.2);
+  animation: floating-form-enter 220ms cubic-bezier(.22, 1, .36, 1);
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+@keyframes floating-form-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floatingFormJump {
+    animation: none;
+  }
+}
+
+.floatingFormLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.floatingFormArrow {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--ink);
+  font-size: 22px;
+  transition: transform 180ms ease;
+}
+
+.floatingFormJump:hover {
+  background: var(--orange-soft);
+  box-shadow: 0 16px 34px rgba(24, 40, 56, 0.25);
+  transform: translateY(4px);
+}
+
+.floatingFormJump:hover .floatingFormArrow {
+  transform: translateY(2px);
+}
+
+.floatingFormJump:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+
 .kicker {
   margin: 0;
-  color: #92989b;
+  color: var(--ink-muted);
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.19em;
@@ -46,7 +110,7 @@
 
 .sectionHeading h2 {
   margin: 24px 0 0;
-  color: #ece9e4;
+  color: var(--ink);
   font-size: clamp(48px, 5.5vw, 82px);
   font-weight: 500;
   letter-spacing: -0.065em;
@@ -54,7 +118,7 @@
 }
 
 .sectionHeading h2 em {
-  color: var(--amber);
+  color: var(--accent-ink);
 }
 
 .sectionHeadingInline {
@@ -68,12 +132,13 @@
 .sectionHeadingInline > p {
   max-width: 430px;
   margin: 0 0 4px;
-  color: #969c9e;
-  font-size: 14px;
+  color: var(--ink-muted);
+  font-size: clamp(17px, 1.25vw, 19px);
   line-height: 1.7;
 }
 
 .button {
+  border-radius: var(--radius-pill);
   min-height: 56px;
   padding: 7px 8px 7px 20px;
   display: inline-flex;
@@ -89,6 +154,7 @@
 }
 
 .button > span {
+  border-radius: var(--radius-pill);
   width: 40px;
   height: 40px;
   display: grid;
@@ -137,6 +203,10 @@
 }
 
 @media (max-width: 800px) {
+  .expatPage {
+    --content-section-padding: 105px;
+  }
+
   .sectionHeading h2 {
     font-size: clamp(43px, 12vw, 62px);
   }
@@ -150,5 +220,44 @@
 @media (max-width: 480px) {
   .button {
     gap: 32px;
+  }
+
+  .floatingFormJump {
+    min-height: 56px;
+    padding: 6px 6px 6px 17px;
+    gap: 13px;
+  }
+
+  .floatingFormLabel {
+    font-size: 9px;
+  }
+
+  .floatingFormArrow {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 320px) {
+  .floatingFormJump {
+    width: 56px;
+    min-height: 56px;
+    padding: 7px;
+  }
+
+  .floatingFormLabel {
+    display: none;
+  }
+
+  .floatingFormArrow {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floatingFormJump {
+    transition: none;
   }
 }

@@ -18,6 +18,10 @@ tsconfig.tsbuildinfo
 public/consepts/
 public/images/*.zip
 
+# Local source documents used to prepare the public site
+/TUBUDD_2026_Vietnam_Relocation Guide Booklet.pdf
+/Vietnam_Living_Summit_Master_Plan*.docx
+
 # Editor and OS files
 .DS_Store
 *.log

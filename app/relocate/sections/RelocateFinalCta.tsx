@@ -1,3 +1,4 @@
+import { attendeeRegistrationAnchor } from "../links";
 import shared from "../../components/summit/SummitShared.module.css";
 import styles from "./RelocateFinalCta.module.css";
 
@@ -11,7 +12,7 @@ export function RelocateFinalCta() {
         </div>
         <div className={styles.action}>
           <p>Join the early-access list for date, venue, and registration updates.</p>
-          <a className={`${shared.button} ${shared.buttonDark}`} href="mailto:hello@meetannie.co?subject=Vietnam%20Living%20Summit%202026">Register interest <span>↗</span></a>
+          <a className={`${shared.button} ${shared.buttonDark}`} href={attendeeRegistrationAnchor}>Register interest <span>↓</span></a>
         </div>
       </div>
     </section>

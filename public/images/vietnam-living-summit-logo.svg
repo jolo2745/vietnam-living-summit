@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="logo-title logo-description">
+  <title id="logo-title">Vietnam Living Summit 2026</title>
+  <desc id="logo-description">Vietnam Living Summit logo with 2026 placed beside Summit</desc>
+  <defs>
+    <filter id="logo-shadow" x="-10%" y="-10%" width="125%" height="130%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="13" dy="13" stdDeviation="0" flood-color="#0b0b0b" flood-opacity="0.7" />
+    </filter>
+  </defs>
+  <g filter="url(#logo-shadow)" font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900">
+    <text x="58" y="150" fill="#ffffff" font-size="136" font-style="italic" letter-spacing="7" textLength="650" lengthAdjust="spacingAndGlyphs">VIETNAM</text>
+    <text x="135" y="390" fill="#ff611b" font-family="Arial, Helvetica, sans-serif" font-size="235" font-weight="700" letter-spacing="-4" textLength="930" lengthAdjust="spacingAndGlyphs">LIVING</text>
+    <text x="58" y="610" fill="#ffffff" font-size="164" letter-spacing="2" textLength="650" lengthAdjust="spacingAndGlyphs">SUMMIT</text>
+    <text x="756" y="610" fill="#ff8f40" font-size="145" letter-spacing="1" textLength="380" lengthAdjust="spacingAndGlyphs">2026</text>
+  </g>
+</svg>

@@ -1,17 +1,9 @@
 {
-  "name": "vietnam-living-summit",
-  "main": "scripts/site-worker.mjs",
+  "name": "vietnam-living-summit-shadow",
+  "main": "scripts/shadow-worker.mjs",
   "compatibility_date": "2026-08-13",
-  "routes": [
-    {
-      "pattern": "vietnam-living-summit.com",
-      "custom_domain": true
-    },
-    {
-      "pattern": "www.vietnam-living-summit.com",
-      "custom_domain": true
-    }
-  ],
+  "workers_dev": true,
+  "preview_urls": false,
   "vars": {
     "REGISTRATION_URL": "https://docs.google.com/forms/d/e/1FAIpQLSfb38vO1XAUqsfDnkSAEq80xFJu-Pva3_LScdxCtn5EaRQggQ/viewform",
     "EMAIL_FROM": "hello@vietnam-living-summit.com"

@@ -27,7 +27,7 @@
 .list h3 {
   margin: 0;
   color: #f2eee9;
-  font: 400 clamp(28px, 2.6vw, 40px) Georgia, serif;
+  font: 400 clamp(28px, 2.6vw, 40px) var(--font-numerals);
 }
 
 .list p {
