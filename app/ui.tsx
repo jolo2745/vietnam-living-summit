@@ -7,7 +7,7 @@ import { LanguageSwitch, useLanguage } from "./i18n";
 
 export function Brand({ pageTitle = false }: { pageTitle?: boolean }) {
   return (
-    <Link href="/" className="brand">
+    <Link href="/relocate" className="brand">
       {pageTitle ? (
         <Image
           className="site-logo"
