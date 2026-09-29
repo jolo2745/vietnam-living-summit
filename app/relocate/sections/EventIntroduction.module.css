@@ -1,0 +1,257 @@
+.section {
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, .35), transparent 30%),
+    var(--surface-alt);
+  color: var(--ink);
+  padding-block: var(--content-section-padding);
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(circle, rgba(39, 61, 82, .16) 1.1px, transparent 1.45px);
+  background-size: 19px 19px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(ellipse 84% 80% at 50% 48%, #000 18%, rgba(0, 0, 0, .58) 58%, transparent 92%);
+  mask-image: radial-gradient(ellipse 84% 80% at 50% 48%, #000 18%, rgba(0, 0, 0, .58) 58%, transparent 92%);
+  pointer-events: none;
+}
+
+.section::after {
+  content: "";
+  position: absolute;
+  bottom: -24px;
+  left: 0;
+  width: 100%;
+  height: 88px;
+  background: linear-gradient(
+    to bottom,
+    rgba(223, 238, 247, 0),
+    var(--surface-alt) 60%,
+    var(--surface-alt) 73%,
+    rgba(223, 238, 247, 0)
+  );
+  pointer-events: none;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  align-items: center;
+  gap: clamp(40px, 6vw, 92px);
+}
+
+.layout::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(50% + min(640px, calc(50% - 40px)));
+  height: 1px;
+  background: var(--surface-line);
+  pointer-events: none;
+}
+
+.copy {
+  min-width: 0;
+  position: relative;
+  z-index: 0;
+}
+
+.copy::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -64px -18px;
+  background: radial-gradient(
+    ellipse at 44% 50%,
+    var(--surface-alt) 0 48%,
+    rgba(223, 238, 247, 0.95) 64%,
+    rgba(223, 238, 247, 0.58) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.copy h2 {
+  margin: 0;
+  font-size: clamp(48px, 5.7vw, 80px);
+  font-weight: 500;
+  letter-spacing: -.065em;
+  line-height: 1.02;
+}
+
+.copy h2 em { color: var(--amber); }
+
+.socials { margin-top: clamp(26px, 3.5vw, 42px); }
+
+.socialLabel {
+  display: block;
+  margin-bottom: 17px;
+  color: var(--ink-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.profileGrid {
+  width: 100%;
+  padding: 0 0 10px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scrollbar-width: thin;
+}
+
+.profileCard {
+  flex: 0 0 min(360px, calc(100vw - 32px));
+  height: 470px;
+  padding: 14px;
+  overflow: auto;
+  scroll-snap-align: start;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, .68);
+  box-shadow: 0 16px 36px rgba(24, 40, 56, .08);
+}
+
+.profileCard h3 {
+  margin: 0 0 12px;
+  color: var(--amber);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.profileCard blockquote {
+  width: 100%;
+  min-width: 288px !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.profileCard blockquote > a,
+.profileCard blockquote section > a {
+  display: inline-flex;
+  padding: 14px 0;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.facebookEmbed {
+  display: block;
+  width: 100%;
+  height: 390px;
+  border: 0;
+  background: #fff;
+}
+
+.tiktokProfile {
+  display: flex;
+  min-height: 365px;
+  padding: 26px 20px 20px;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(24, 40, 56, .14);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--ink);
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(24, 40, 56, .1);
+}
+
+.tiktokAvatar {
+  display: grid;
+  width: 82px;
+  height: 82px;
+  margin-bottom: 18px;
+  place-items: center;
+  border-radius: 50%;
+  background: #101010;
+  color: #fff;
+  font: 700 44px/1 Arial, sans-serif;
+  text-shadow: -3px 0 #25f4ee, 3px 0 #fe2c55;
+}
+
+.tiktokProfile strong {
+  font: 800 19px/1.25 var(--font-site);
+}
+
+.tiktokProfile > span:not(.tiktokAvatar) {
+  margin-top: 5px;
+  color: var(--muted);
+  font: 600 13px/1.3 var(--font-site);
+}
+
+.tiktokProfile p {
+  margin: 22px 0;
+  color: var(--muted);
+  font: 500 14px/1.5 var(--font-site);
+}
+
+.tiktokProfile a {
+  width: 100%;
+  margin-top: auto;
+  padding: 13px 15px;
+  border-radius: 10px;
+  background: #101010;
+  color: #fff;
+  font: 800 12px/1 var(--font-site);
+  text-decoration: none;
+}
+
+.tiktokProfile a:hover {
+  background: #2b2b2b;
+}
+
+.media { min-width: 0; width: 100%; max-width: 360px; margin: 0; justify-self: center; }
+
+.poster {
+  border-radius: var(--radius-panel);
+  position: relative;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background: var(--navy-deep);
+  color: var(--ink);
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.videoCaption { margin-top: 12px; text-align: center; font-size: 13px; }
+.videoCaption a { text-decoration: underline; text-underline-offset: 3px; }
+.videoCaption a:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; }
+
+@media (max-width: 800px) {
+  .layout::after { width: calc(100% - 18px); }
+  .layout { grid-template-columns: 1fr; gap: 38px; }
+  .copy h2 { font-size: clamp(46px, 10vw, 72px); }
+  .socials { margin-top: 30px; }
+  .profileCard { height: 390px; }
+}
+
+@media (max-width: 480px) {
+  .profileCard { padding: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profileCard { scroll-behavior: auto; }
+}

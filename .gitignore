@@ -1,0 +1,27 @@
+# Dependencies and generated output
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+
+# Local Cloudflare state
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Design references and source archives are not public site assets
+public/consepts/
+public/images/*.zip
+
+# Local source documents used to prepare the public site
+/TUBUDD_2026_Vietnam_Relocation Guide Booklet.pdf
+/Vietnam_Living_Summit_Master_Plan*.docx
+
+# Editor and OS files
+.DS_Store
+*.log
