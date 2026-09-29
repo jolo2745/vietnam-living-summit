@@ -1,9 +1,19 @@
 import { handleBookletRequest } from "./booklet-email.mjs";
 
-// Shadow-only routing: production continues to serve static assets directly.
 export default {
   async fetch(request, env) {
-    const pathname = new URL(request.url).pathname;
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+    if (pathname === "/relocate" || pathname === "/relocate/") {
+      url.pathname = "/";
+      return new Response(null, {
+        status: 308,
+        headers: {
+          Location: url.toString(),
+          "X-Robots-Tag": "noindex, nofollow, noarchive",
+        },
+      });
+    }
     const response = pathname === "/api/booklet"
       ? await handleBookletRequest(request, env)
       : pathname === "/robots.txt"

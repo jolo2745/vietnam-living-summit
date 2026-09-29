@@ -24,7 +24,7 @@ export function PartnerHero() {
           <div><dt>{t("Time", "Thời gian")}</dt><dd>8AM – 12AM · 30/10/2026</dd></div>
         </dl>
         <div className={shared.showcaseActions}>
-          <a className={shared.showcasePrimary} href="/relocate/#who-we-are">{t("Explore the event", "Khám phá sự kiện")} <span aria-hidden="true">↘</span></a>
+          <a className={shared.showcasePrimary} href="/#who-we-are">{t("Explore the event", "Khám phá sự kiện")} <span aria-hidden="true">↘</span></a>
           <a className={shared.showcaseSecondary} href="/partners/#who-we-are">{t("Become our partner", "Trở thành đối tác")} <span aria-hidden="true">↗</span></a>
         </div>
         <dl className={shared.showcaseFacts}>
