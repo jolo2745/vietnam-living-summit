@@ -116,6 +116,21 @@ test("partner enquiry sends the selected partnership type", async () => {
   assert.notEqual(sent[1].subject, "Your VLS2026 Spot is Confirmed");
 });
 
+test("partner acknowledgement follows the selected site language", async () => {
+  const { sent, env } = environment();
+  assert.equal((await handleRegistrationRequest(request({ ...partner, language: "vi" }), env)).status, 200);
+  assert.equal(sent[1].to.email, partner.email);
+  assert.equal(sent[1].subject, "Đã nhận thông tin hợp tác của bạn");
+  assert.match(sent[1].text, /^Chào Test Partner,/);
+  assert.match(sent[1].text, /Chúng tôi đã nhận được thông tin hợp tác của bạn/);
+
+  assert.equal((await handleRegistrationRequest(request({ ...partner, language: "en" }), env)).status, 200);
+  assert.equal(sent[3].to.email, partner.email);
+  assert.equal(sent[3].subject, "We received your partnership enquiry");
+  assert.match(sent[3].text, /^Hi Test Partner,/);
+  assert.match(sent[3].text, /We received your partnership enquiry/);
+});
+
 test("invalid or cross-site submissions send no email", async () => {
   const { sent, env } = environment();
   assert.equal((await handleRegistrationRequest(request({ ...attendee, interests: [] }), env)).status, 400);
