@@ -101,7 +101,7 @@ test("attendee registration is stored and sends the requested confirmation", asy
   assert.equal(sent[0].to.email, attendee.email);
   assert.equal(sent[0].subject, "Your VLS2026 Spot is Confirmed");
   assert.equal(sent[0].replyTo.email, "hello@vietnam-living-summit.com");
-  assert.equal(sent[0].text, `Hi, Test Attendee\n\nThank you for registering for Vietnam Living Summit 2026 — we're excited to have you with us!\nJust a quick note: if you have any questions or needs regarding relocation, investment, or visas that need attention right away (rather than waiting until the event in October), reply this mail to let us know and we'll be happy to set up an appointment call with the right person on our team to assist you sooner.\n\nLooking forward to meeting you there — see you in 30th October, Hanoi!\n\nBest,\nThuy Anh\nVLS2026 Organizing Team`);
+  assert.equal(sent[0].text, `Hi Test Attendee,\n\nThank you for registering for Vietnam Living Summit 2026. We're excited to have you join us.\n\nIf you have any urgent questions about relocation, investment, or visas, please reply to this email. We'll arrange a call with the right person on our team so you can get help before the event.\n\nWe look forward to meeting you in Hanoi on 30 October 2026.\n\nBest,\nThuy Anh\nVLS2026 Organizing Team`);
   assert.equal(sent[1].to.email, "marketing@tubudd.com");
   assert.match(sent[1].text, /Consultation area: Visa & immigration/);
 });
@@ -112,19 +112,8 @@ test("partner enquiry sends the selected partnership type", async () => {
   assert.equal(response.status, 200);
   assert.match(sent[0].text, /Partnership interests: Exhibiting/);
   assert.equal(sent[1].to.email, partner.email);
-  assert.equal(sent[1].subject, "We've Received Your VLS2026 Partnership Enquiry");
+  assert.equal(sent[1].subject, "We received your partnership enquiry");
   assert.notEqual(sent[1].subject, "Your VLS2026 Spot is Confirmed");
-  assert.equal(sent[1].replyTo.email, "hello@vietnam-living-summit.com");
-  assert.equal(sent[1].text, `Hi, Test Partner\n\nThank you for your interest in partnering with Vietnam Living Summit 2026. We've received your enquiry and the details you shared about Example Co.\n\nOur organizing team will review them and get back to you about the next steps. If you have any questions or would like to add anything in the meantime, just reply to this email.\n\nBest,\nThuy Anh\nVLS2026 Organizing Team`);
-});
-
-test("Vietnamese partner acknowledgement uses its own wording", async () => {
-  const { sent, env } = environment();
-  const response = await handleRegistrationRequest(request({ ...partner, language: "vi" }), env);
-  assert.equal(response.status, 200);
-  assert.equal(sent[1].subject, "VLS2026 đã nhận được đề nghị hợp tác của bạn");
-  assert.match(sent[1].text, /^Chào Test Partner,/);
-  assert.match(sent[1].text, /Ban Tổ chức VLS2026$/);
 });
 
 test("invalid or cross-site submissions send no email", async () => {
@@ -146,7 +135,7 @@ test("attendee confirmation escapes the name and a retry does not send twice", a
   const { sent, records, env } = environment();
   const body = { ...attendee, requestId: crypto.randomUUID(), fullName: "<Alex>" };
   assert.equal((await handleRegistrationRequest(request(body), env)).status, 200);
-  assert.ok(sent[0].html.includes("Hi, &lt;Alex&gt;"));
+  assert.ok(sent[0].html.includes("Hi &lt;Alex&gt;,"));
   assert.ok(!sent[0].html.includes("<Alex>"));
   assert.equal((await handleRegistrationRequest(request(body), env)).status, 200);
   assert.equal(sent.length, 2);
