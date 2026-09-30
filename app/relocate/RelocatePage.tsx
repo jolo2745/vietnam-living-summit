@@ -3,19 +3,21 @@
 import { useEffect, useState } from "react";
 import shared from "../components/summit/SummitShared.module.css";
 import { useLanguage } from "../i18n";
-import { EventSignup } from "../components/summit/EventSignup";
+import { BookletSignup } from "../components/summit/BookletSignup";
 import { ConversionCta } from "../components/summit/ConversionCta";
+import { EventSignup } from "../components/summit/EventSignup";
+import { AttendeeSteps } from "../components/summit/AttendeeSteps";
 import { WhoWeAre } from "../components/summit/WhoWeAre";
 import { SponsorsSection } from "../components/summit/SponsorsSection";
-import { EventAgenda } from "../relocate/sections/EventAgenda";
 import { Footer, Header } from "../ui";
-import { Industries } from "./sections/Industries";
-import { PartnerBenefits } from "./sections/PartnerBenefits";
-import { PartnerHero } from "./sections/PartnerHero";
-import { PartnerLevels } from "./sections/PartnerLevels";
+import { EventOverview } from "./sections/EventOverview";
+import { EventIntroduction } from "./sections/EventIntroduction";
+import { EventAgenda } from "./sections/EventAgenda";
+import { RelocateHero } from "./sections/RelocateHero";
+import { Industries } from "../partners/sections/Industries";
 
-export default function PartnersPage() {
-  const { t } = useLanguage();
+export default function RelocatePage() {
+  const { language, t } = useLanguage();
   const [showFloatingRegistration, setShowFloatingRegistration] = useState(false);
 
   useEffect(() => {
@@ -42,22 +44,24 @@ export default function PartnersPage() {
   }, []);
 
   return (
-    <main className={`${shared.page} ${shared.partnerPage}`}>
-      <Header active="partners" />
+    <main className={`${shared.page} ${shared.expatPage}`} lang={language}>
+      <Header active="relocate" />
       {showFloatingRegistration ? (
-        <a className={shared.floatingFormJump} href="#event-signup" aria-label={t("Go to the business partnership form", "Đi đến biểu mẫu hợp tác doanh nghiệp")}>
-          <span className={shared.floatingFormLabel}>{t("Join the partner allience", "Trở thành đối tác")}</span>
+        <a className={shared.floatingFormJump} href="#event-signup" aria-label={t("Go to the event sign-up form", "Đi đến biểu mẫu đăng ký sự kiện")}>
+          <span className={shared.floatingFormLabel}>{t("Register free now", "Tham gia miễn phí")}</span>
           <span className={shared.floatingFormArrow} aria-hidden="true">↓</span>
         </a>
       ) : null}
-      <PartnerHero />
-      <WhoWeAre tone="business" />
-      <PartnerBenefits />
+      <RelocateHero />
+      <EventIntroduction />
+      <WhoWeAre tone="people" />
+      <EventOverview />
+      <ConversionCta audience="attendees" />
+      <Industries context="attendees" />
       <EventAgenda />
-      <ConversionCta audience="business" />
-      <Industries />
-      <PartnerLevels />
-      <EventSignup source="business" />
+      <BookletSignup source="people" />
+      <AttendeeSteps />
+      <EventSignup source="people" />
       <SponsorsSection />
       <Footer />
     </main>

@@ -6,19 +6,18 @@ import "@fontsource/be-vietnam-pro/600.css";
 import "@fontsource/be-vietnam-pro/700.css";
 import "@fontsource/be-vietnam-pro/800.css";
 import "@fontsource/be-vietnam-pro/900.css";
-import "./globals.css";
-import { LanguageProvider } from "./i18n";
+import "../globals.css";
+import { LanguageProvider } from "../i18n";
 
 export const metadata: Metadata = {
-  title: "Vietnam Living Summit 2026",
-  description:
-    "A summit connecting people building a life in Vietnam with trusted local businesses, services, and communities.",
+  metadataBase: new URL("https://vietnam-living-summit.com"),
+  applicationName: "Vietnam Living Summit 2026",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body><LanguageProvider>{children}</LanguageProvider></body>
+      <body><LanguageProvider initialLanguage="en">{children}</LanguageProvider></body>
     </html>
   );
 }

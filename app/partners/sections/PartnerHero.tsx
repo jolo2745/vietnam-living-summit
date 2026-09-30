@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useLanguage } from "../../i18n";
+import { localizedHref, useLanguage } from "../../i18n";
 import shared from "../../components/summit/SummitShared.module.css";
 
 export function PartnerHero() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   return (
     <section className={`${shared.showcaseHero} ${shared.showcaseHeroPartner} wrap`}>
@@ -18,13 +18,13 @@ export function PartnerHero() {
           height={749}
           priority
         />
-        <p className={shared.showcaseTagline}>{t("Partner with TUBUDD to build Vietnam's ecosystem for foreign residents.", "Cùng TUBUDD xây dựng hệ sinh thái cho người nước ngoài tại Việt Nam")}</p>
+        <h1 className={shared.showcaseTagline}>{t("Partner with TUBUDD to build Vietnam's ecosystem for foreign residents.", "Cùng TUBUDD xây dựng hệ sinh thái cho người nước ngoài tại Việt Nam")}</h1>
         <dl className={shared.showcaseDetails} aria-label={t("Event details", "Thông tin sự kiện")}>
           <div><dt>{t("Location", "Địa điểm")}</dt><dd>{t("Hanoi, Vietnam", "Hà Nội, Việt Nam")}</dd></div>
           <div><dt>{t("Time", "Thời gian")}</dt><dd>8:30 AM–12:00 PM · 30/10/2026</dd></div>
         </dl>
         <div className={shared.showcaseActions}>
-          <a className={shared.showcasePrimary} href="/#who-we-are">{t("Explore the event", "Khám phá sự kiện")} <span aria-hidden="true">↘</span></a>
+          <a className={shared.showcasePrimary} href={localizedHref("/#who-we-are", language)}>{t("Explore the event", "Khám phá sự kiện")} <span aria-hidden="true">↘</span></a>
           <a className={shared.showcaseSecondary} href="#event-signup">{t("Become our partner", "Trở thành đối tác")} <span aria-hidden="true">↘</span></a>
         </div>
         <dl className={shared.showcaseFacts}>

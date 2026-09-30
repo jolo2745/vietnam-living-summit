@@ -12,29 +12,31 @@ type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 const storageKey = "vls-language";
+export function localizedHref(path: string, language: Language) {
+  return language === "vi" ? (path === "/" ? "/vi" : `/vi${path}`) : path;
+}
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("en");
+export function LanguageProvider({ children, initialLanguage }: { children: ReactNode; initialLanguage: Language }) {
+  const [language, setLanguageState] = useState<Language>(initialLanguage);
 
   const setLanguage = useCallback((nextLanguage: Language) => {
+    if (nextLanguage === language) return;
     setLanguageState(nextLanguage);
-    document.documentElement.lang = nextLanguage;
     window.localStorage.setItem(storageKey, nextLanguage);
-  }, []);
+    const currentPath = window.location.pathname.replace(/^\/vi(?=\/|$)/, "") || "/";
+    window.location.assign(`${localizedHref(currentPath, nextLanguage)}${window.location.search}${window.location.hash}`);
+  }, [language]);
 
   useEffect(() => {
-    const savedLanguage = window.localStorage.getItem(storageKey);
-    if (savedLanguage === "vi") setLanguageState("vi");
-  }, []);
+    if (initialLanguage !== "en" || window.localStorage.getItem(storageKey) !== "vi") return;
+    const path = window.location.pathname;
+    if (path === "/" || path === "/partners" || path === "/partners/") {
+      window.location.replace(`${localizedHref(path, "vi")}${window.location.search}${window.location.hash}`);
+    }
+  }, [initialLanguage]);
 
   useEffect(() => {
     document.documentElement.lang = language;
-    const description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-    if (description) {
-      description.content = language === "vi"
-        ? "Sự kiện kết nối những người xây dựng cuộc sống tại Việt Nam với các doanh nghiệp, dịch vụ và cộng đồng địa phương đáng tin cậy."
-        : "A summit connecting people building a life in Vietnam with trusted local businesses, services, and communities.";
-    }
   }, [language]);
 
   const value = useMemo<LanguageContextValue>(() => ({

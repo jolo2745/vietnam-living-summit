@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { LanguageSwitch, useLanguage } from "./i18n";
+import { LanguageSwitch, localizedHref, useLanguage } from "./i18n";
 
 export function Brand({ pageTitle = false }: { pageTitle?: boolean }) {
+  const { language } = useLanguage();
   return (
-    <Link href="/" className="brand">
+    <Link href={localizedHref("/", language)} className="brand">
       {pageTitle ? (
         <Image
           className="site-logo"
@@ -50,7 +51,7 @@ function HeaderPartnerLogos() {
 }
 
 export function Header({ active }: { active?: "relocate" | "partners" }) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [isHidden, setIsHidden] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -129,8 +130,8 @@ export function Header({ active }: { active?: "relocate" | "partners" }) {
       <div className="site-header-inner wrap">
         <Brand pageTitle />
         <nav aria-label={t("Main navigation", "Điều hướng chính")} className="desktop-nav">
-          <Link className={active === "relocate" ? "active" : ""} href="/">{t("Moving to Vietnam", "Dành cho người tham dự")}</Link>
-          <Link className={active === "partners" ? "active" : ""} href="/partners">{t("Become our partner", "Dành cho doanh nghiệp")}</Link>
+          <Link className={active === "relocate" ? "active" : ""} href={localizedHref("/", language)}>{t("Moving to Vietnam", "Dành cho người tham dự")}</Link>
+          <Link className={active === "partners" ? "active" : ""} href={localizedHref("/partners", language)}>{t("Become our partner", "Dành cho doanh nghiệp")}</Link>
         </nav>
         <HeaderPartnerLogos />
         <div className="header-actions">
@@ -154,8 +155,8 @@ export function Header({ active }: { active?: "relocate" | "partners" }) {
         <>
           <button aria-hidden="true" className="mobile-backdrop" onClick={() => setIsMenuOpen(false)} tabIndex={-1} type="button" />
           <nav aria-label={t("Mobile navigation", "Điều hướng di động")} className="mobile-nav" id="mobile-navigation">
-            <Link href="/" onClick={() => setIsMenuOpen(false)}>{t("Moving to Vietnam", "Dành cho người tham dự")}<span className="mobile-nav-arrow">→</span></Link>
-            <Link href="/partners" onClick={() => setIsMenuOpen(false)}>{t("Become our partner", "Dành cho doanh nghiệp")}<span className="mobile-nav-arrow">→</span></Link>
+            <Link href={localizedHref("/", language)} onClick={() => setIsMenuOpen(false)}>{t("Moving to Vietnam", "Dành cho người tham dự")}<span className="mobile-nav-arrow">→</span></Link>
+            <Link href={localizedHref("/partners", language)} onClick={() => setIsMenuOpen(false)}>{t("Become our partner", "Dành cho doanh nghiệp")}<span className="mobile-nav-arrow">→</span></Link>
             <a href="mailto:marketing@tubudd.com" onClick={() => setIsMenuOpen(false)}>{t("Contact", "Liên hệ")}<span className="mobile-nav-arrow">↗</span></a>
             <LanguageSwitch mobile />
           </nav>
@@ -166,7 +167,7 @@ export function Header({ active }: { active?: "relocate" | "partners" }) {
 }
 
 export function Footer() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   return (
     <footer className="site-footer">
@@ -184,19 +185,19 @@ export function Footer() {
         </div>
 
         <nav className="footer-column" aria-label={t("Moving to Vietnam links", "Liên kết trang Chuyển đến Việt Nam")}>
-          <Link className="footer-heading" href="/">{t("Moving to Vietnam", "Chuyển đến Việt Nam")}</Link>
-          <a href="/#event-overview">{t("Why you should attend?", "Vì sao bạn nên tham dự?")}</a>
-          <a href="/#agenda">{t("Agenda", "Lịch trình")}</a>
-          <a href="/#meet-the-alliance">{t("Consultant", "Chuyên gia")}</a>
-          <a href="/#event-signup">{t("Register for free", "Đăng ký miễn phí")}</a>
+          <Link className="footer-heading" href={localizedHref("/", language)}>{t("Moving to Vietnam", "Chuyển đến Việt Nam")}</Link>
+          <a href={localizedHref("/#event-overview", language)}>{t("Why you should attend?", "Vì sao bạn nên tham dự?")}</a>
+          <a href={localizedHref("/#agenda", language)}>{t("Agenda", "Lịch trình")}</a>
+          <a href={localizedHref("/#meet-the-alliance", language)}>{t("Consultant", "Chuyên gia")}</a>
+          <a href={localizedHref("/#event-signup", language)}>{t("Register for free", "Đăng ký miễn phí")}</a>
         </nav>
 
         <nav className="footer-column" aria-label={t("Become a partner links", "Liên kết trang Trở thành đối tác")}>
-          <Link className="footer-heading" href="/partners">{t("Become a Partner", "Trở thành đối tác")}</Link>
-          <Link href="/partners#partner-benefits">{t("Grow Your Business with TUBUDD alliance", "Phát triển doanh nghiệp cùng liên minh TUBUDD")}</Link>
-          <Link href="/partners#industries">{t("Which service do you serve?", "Bạn cung cấp dịch vụ trong lĩnh vực nào?")}</Link>
-          <Link href="/partners#partnership-levels">{t("Choose your sponsorship package.", "Chọn gói tài trợ của bạn.")}</Link>
-          <Link href="/partners#event-signup">{t("Register to become our partner", "Đăng ký trở thành đối tác")}</Link>
+          <Link className="footer-heading" href={localizedHref("/partners", language)}>{t("Become a Partner", "Trở thành đối tác")}</Link>
+          <Link href={localizedHref("/partners#partner-benefits", language)}>{t("Grow Your Business with TUBUDD alliance", "Phát triển doanh nghiệp cùng liên minh TUBUDD")}</Link>
+          <Link href={localizedHref("/partners#industries", language)}>{t("Which service do you serve?", "Bạn cung cấp dịch vụ trong lĩnh vực nào?")}</Link>
+          <Link href={localizedHref("/partners#partnership-levels", language)}>{t("Choose your sponsorship package.", "Chọn gói tài trợ của bạn.")}</Link>
+          <Link href={localizedHref("/partners#event-signup", language)}>{t("Register to become our partner", "Đăng ký trở thành đối tác")}</Link>
         </nav>
 
         <nav className="footer-column footer-social" aria-label={t("Social media and contact links", "Liên kết mạng xã hội và liên hệ")}>
