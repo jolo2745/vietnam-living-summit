@@ -6,6 +6,7 @@ import { useLanguage } from "../i18n";
 import { BookletSignup } from "../components/summit/BookletSignup";
 import { ConversionCta } from "../components/summit/ConversionCta";
 import { EventSignup } from "../components/summit/EventSignup";
+import { AttendeeSteps } from "../components/summit/AttendeeSteps";
 import { WhoWeAre } from "../components/summit/WhoWeAre";
 import { SponsorsSection } from "../components/summit/SponsorsSection";
 import { Footer, Header } from "../ui";
@@ -59,6 +60,7 @@ export default function RelocatePage() {
       <Industries context="attendees" />
       <EventAgenda />
       <BookletSignup source="people" />
+      <AttendeeSteps />
       <EventSignup source="people" />
       <SponsorsSection />
       <Footer />

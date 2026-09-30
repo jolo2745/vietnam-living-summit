@@ -15,6 +15,13 @@
       "allowed_sender_addresses": ["hello@vietnam-living-summit.com"]
     }
   ],
+  "d1_databases": [
+    {
+      "binding": "REGISTRATIONS",
+      "database_name": "vls2026-attendees-shadow",
+      "database_id": "3563efff-8952-402f-b727-309f96c22949"
+    }
+  ],
   "assets": {
     "directory": "./out",
     "binding": "ASSETS",

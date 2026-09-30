@@ -1,0 +1,110 @@
+.section {
+  position: relative;
+  isolation: isolate;
+  padding-bottom: clamp(70px, 7vw, 105px);
+  background: var(--surface-alt);
+  color: var(--ink);
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: linear-gradient(rgba(76, 139, 190, .14) 1px, transparent 1px), linear-gradient(90deg, rgba(76, 139, 190, .14) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse 24% 72% at 56% 52%, #000 12%, rgba(0, 0, 0, .5) 58%, transparent 94%);
+  mask-image: radial-gradient(ellipse 24% 72% at 56% 52%, #000 12%, rgba(0, 0, 0, .5) 58%, transparent 94%);
+  pointer-events: none;
+}
+
+.section::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 50%;
+  width: calc(50% + min(640px, calc(50% - 40px)));
+  height: 1px;
+  background: var(--surface-line);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.inner {
+  padding-top: clamp(70px, 7vw, 105px);
+}
+
+.title {
+  max-width: 720px;
+  margin: 0 0 clamp(26px, 3vw, 40px);
+  color: var(--ink);
+  font-size: clamp(30px, 3.2vw, 46px);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1.12;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--surface-line);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, .8);
+}
+
+.stepNumber {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  color: #111;
+  background: var(--amber);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.card h3 {
+  margin: 1px 0 5px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.card p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+@media (max-width: 1320px) {
+  .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .card { grid-column: span 2; }
+  .card:nth-child(n+4) { grid-column: span 3; }
+}
+
+@media (max-width: 760px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card,.card:nth-child(n+4) { grid-column: span 1; }
+  .card:last-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 560px) {
+  .section { padding-bottom: 65px; }
+  .inner { padding-top: 65px; }
+  .grid { grid-template-columns: 1fr; }
+  .card:last-child { grid-column: 1; }
+}

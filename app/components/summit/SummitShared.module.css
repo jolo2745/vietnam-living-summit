@@ -545,3 +545,38 @@
     transition: none;
   }
 }
+
+@media (min-width: 801px) {
+  .showcaseHero {
+    min-height: 100svh;
+    padding-top: clamp(88px, 10svh, 112px);
+    padding-bottom: clamp(28px, 4svh, 44px);
+  }
+
+  .showcaseLogo { width: min(390px, 58vw); max-height: min(28svh, 225px); }
+  .showcaseTagline { min-height: 3em; display: flex; align-items: center; justify-content: center; margin-top: clamp(14px, 2svh, 22px); font-size: clamp(16px, 1.5vw, 21px); line-height: 1.45; }
+  .showcaseDetails { margin-top: clamp(16px, 2svh, 24px); }
+  .showcaseDetails div { padding-block: 12px; }
+  .showcaseActions { margin-top: clamp(18px, 2.3svh, 26px); }
+  .showcaseActions a { min-height: 56px; }
+  .showcaseFacts { margin-top: clamp(20px, 2.8svh, 36px); padding-top: clamp(16px, 2svh, 24px); }
+  .showcaseFacts dd { font-size: clamp(32px, 3.5vw, 48px); }
+  .showcaseFacts div:nth-child(2) dd { font-size: clamp(28px, 3vw, 42px); }
+}
+
+@media (min-width: 561px) and (max-width: 800px) {
+  .showcaseHero { min-height: 100svh; padding: 88px 18px 40px; }
+  .showcaseLogo { width: min(360px, 65vw); }
+  .showcaseTagline { min-height: 3em; display: flex; align-items: center; justify-content: center; margin-top: 16px; font-size: 16px; }
+  .showcaseDetails { margin-top: 18px; }
+  .showcaseDetails div { padding-block: 12px; }
+  .showcaseActions { margin-top: 18px; }
+  .showcaseFacts { margin-top: 24px; padding-top: 16px; }
+}
+
+@media (min-width: 561px) and (max-height: 700px) {
+  .showcaseHero { padding-top: 78px; padding-bottom: 24px; }
+  .showcaseLogo { width: min(310px, 54vw); }
+  .showcaseDetails div { padding-block: 9px; }
+  .showcaseFacts { margin-top: 16px; padding-top: 12px; }
+}

@@ -35,6 +35,10 @@ function validEmail(value) {
   return typeof value === "string" && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function validRequestId(value) {
+  return typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
 function escapeHtml(value) {
   return value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[character]);
 }
@@ -128,6 +132,42 @@ function notification(registration) {
   };
 }
 
+function attendeeConfirmation(name) {
+  const body = `Hi, ${name}\n\nThank you for registering for Vietnam Living Summit 2026 — we're excited to have you with us!\nJust a quick note: if you have any questions or needs regarding relocation, investment, or visas that need attention right away (rather than waiting until the event in October), reply this mail to let us know and we'll be happy to set up an appointment call with the right person on our team to assist you sooner.\n\nLooking forward to meeting you there — see you in 30th October, Hanoi!\n\nBest,\nThuy Anh\nVLS2026 Organizing Team`;
+  return {
+    subject: "Your VLS2026 Spot is Confirmed",
+    text: body,
+    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#132d3e">${escapeHtml(body).replaceAll("\n", "<br>")}</div>`,
+  };
+}
+
+async function saveAttendee(database, id, registration) {
+  const result = await database.prepare(`INSERT OR IGNORE INTO attendee_registrations (
+    id, full_name, email, phone, nationality, residency_status, role, interests_json,
+    heard_from, future_updates, consultation, consultation_area, consultation_question,
+    urgency, language
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .bind(id, registration.fullName, registration.email, registration.phone, registration.nationality,
+      registration.residencyStatus, registration.role, JSON.stringify(registration.interests),
+      registration.heardFrom, registration.futureUpdates ? 1 : 0, registration.consultation,
+      registration.consultationArea, registration.consultationQuestion, registration.urgency,
+      registration.language)
+    .run();
+  if (!result?.success) throw new Error("Attendee registration insert failed");
+  if (result.meta?.changes) return { created: true, confirmationStatus: "pending" };
+
+  const existing = await database.prepare("SELECT email, confirmation_status FROM attendee_registrations WHERE id = ?")
+    .bind(id).first();
+  if (!existing || existing.email !== registration.email) return null;
+  return { created: false, confirmationStatus: existing.confirmation_status };
+}
+
+async function updateConfirmation(database, id, status, messageId = null) {
+  const result = await database.prepare("UPDATE attendee_registrations SET confirmation_status = ?, confirmation_message_id = ? WHERE id = ?")
+    .bind(status, messageId, id).run();
+  if (!result?.success || result.meta?.changes !== 1) throw new Error("Confirmation status update failed");
+}
+
 export async function handleRegistrationRequest(request, env) {
   if (request.method !== "POST") return json({ message: "Method not allowed." }, 405);
   const requestUrl = new URL(request.url);
@@ -147,7 +187,57 @@ export async function handleRegistrationRequest(request, env) {
   if (body?.trapWebsite) return json({ sent: true });
   const registration = validate(body);
   if (!registration) return json({ message: "Please check the required fields." }, 400);
-  if (!env.EMAIL || !env.EMAIL_FROM || !env.REGISTRATION_NOTIFY_TO) return json({ message: "Registration delivery is not connected." }, 503);
+  if (!env.EMAIL || !env.EMAIL_FROM) return json({ message: "Registration delivery is not connected." }, 503);
+
+  if (registration.source === "people") {
+    if (!validRequestId(body.requestId)) return json({ message: "Invalid registration ID." }, 400);
+    if (!env.REGISTRATIONS) return json({ message: "Registration storage is not connected." }, 503);
+    let saved;
+    try {
+      saved = await saveAttendee(env.REGISTRATIONS, body.requestId, registration);
+    } catch (error) {
+      console.error("Attendee registration storage failed", error?.message);
+      return json({ message: "We could not save your registration right now." }, 503);
+    }
+    if (!saved) return json({ message: "Registration ID already used." }, 409);
+
+    let emailSent = saved.confirmationStatus === "sent";
+    if (!emailSent) {
+      try {
+        const result = await env.EMAIL.send({
+          from: { email: env.EMAIL_FROM, name: "Thuy Anh | VLS2026" },
+          to: { email: registration.email, name: registration.fullName },
+          replyTo: { email: env.EMAIL_FROM, name: "Thuy Anh" },
+          ...attendeeConfirmation(registration.fullName),
+        });
+        if (!result?.messageId) throw new Error("Confirmation message ID missing");
+        emailSent = true;
+        await updateConfirmation(env.REGISTRATIONS, body.requestId, "sent", result.messageId);
+      } catch (error) {
+        console.error("Attendee confirmation failed", error?.code, error?.message);
+        if (!emailSent) {
+          try { await updateConfirmation(env.REGISTRATIONS, body.requestId, "failed"); }
+          catch (storageError) { console.error("Confirmation status update failed", storageError?.message); }
+        }
+      }
+    }
+
+    if (saved.created && env.REGISTRATION_NOTIFY_TO) {
+      try {
+        await env.EMAIL.send({
+          from: { email: env.EMAIL_FROM, name: "Vietnam Living Summit" },
+          to: { email: env.REGISTRATION_NOTIFY_TO, name: "Event team" },
+          ...notification(registration),
+        });
+      } catch (error) {
+        console.error("Attendee team notification failed", error?.code, error?.message);
+      }
+    }
+    console.log("Attendee registration saved", body.requestId, emailSent ? "confirmed" : "email_failed");
+    return json({ registered: true, emailSent });
+  }
+
+  if (!env.REGISTRATION_NOTIFY_TO) return json({ message: "Registration delivery is not connected." }, 503);
 
   const details = notification(registration);
   let result;
@@ -165,12 +255,8 @@ export async function handleRegistrationRequest(request, env) {
 
   try {
     const vietnamese = registration.language === "vi";
-    const subject = registration.source === "business"
-      ? vietnamese ? "Đã nhận thông tin hợp tác của bạn" : "We received your partnership enquiry"
-      : vietnamese ? "Đã nhận đăng ký Vietnam Living Summit" : "We received your Vietnam Living Summit registration";
-    const followUp = registration.source === "business"
-      ? vietnamese ? "thông tin hợp tác" : "partnership enquiry"
-      : vietnamese ? "thông tin đăng ký" : "registration";
+    const subject = vietnamese ? "Đã nhận thông tin hợp tác của bạn" : "We received your partnership enquiry";
+    const followUp = vietnamese ? "thông tin hợp tác" : "partnership enquiry";
     const acknowledgement = vietnamese
       ? `Chào ${registration.fullName},\n\nCảm ơn bạn đã quan tâm đến Vietnam Living Summit 2026. Chúng tôi đã nhận được ${followUp} của bạn và sẽ liên hệ về các bước tiếp theo.\n\nĐội ngũ Vietnam Living Summit`
       : `Hi ${registration.fullName},\n\nThank you for your interest in Vietnam Living Summit 2026. We received your ${followUp} and will follow up with the next steps.\n\nVietnam Living Summit team`;

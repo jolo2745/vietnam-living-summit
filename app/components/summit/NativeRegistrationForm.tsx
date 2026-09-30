@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useLanguage } from "../../i18n";
 import styles from "./NativeRegistrationForm.module.css";
 
@@ -15,6 +15,7 @@ export function NativeRegistrationForm({ source }: Props) {
   const [consultation, setConsultation] = useState("");
   const [groupError, setGroupError] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
+  const requestId = useRef<string | null>(null);
 
   const statuses = [
     ["Considering a move", "Đang cân nhắc chuyển đến Việt Nam"],
@@ -96,7 +97,7 @@ export function NativeRegistrationForm({ source }: Props) {
       interests: isBusiness ? [] : selections,
       partnershipTypes: isBusiness ? selections : [],
       futureUpdates: data.get("futureUpdates") === "yes",
-      requestId: crypto.randomUUID(),
+      requestId: requestId.current ??= crypto.randomUUID(),
     };
 
     try {
@@ -112,10 +113,14 @@ export function NativeRegistrationForm({ source }: Props) {
           : t("We couldn't send your form right now. Please try again later.", "Hiện tại chúng tôi chưa thể gửi biểu mẫu. Vui lòng thử lại sau."));
         return;
       }
-      setStatus("success");
+      const result = await response.json() as { registered?: boolean; emailSent?: boolean };
+      setStatus(result.registered && !result.emailSent ? "error" : "success");
       setMessage(isBusiness
         ? t("Thank you. We've received your partnership enquiry and will be in touch.", "Cảm ơn bạn. Chúng tôi đã nhận được thông tin hợp tác và sẽ liên hệ lại.")
-        : t("Thank you. We've received your registration and will email you with the next steps.", "Cảm ơn bạn. Chúng tôi đã nhận được thông tin đăng ký và sẽ gửi email về các bước tiếp theo."));
+        : result.emailSent
+          ? t("Your VLS2026 spot is confirmed. Please check your inbox.", "Chỗ tham dự VLS2026 của bạn đã được xác nhận. Vui lòng kiểm tra hộp thư.")
+          : t("Your registration is saved, but we could not send the confirmation email. Please contact marketing@tubudd.com.", "Đăng ký của bạn đã được lưu, nhưng chúng tôi chưa thể gửi email xác nhận. Vui lòng liên hệ marketing@tubudd.com."));
+      requestId.current = null;
       form.reset();
       setConsultation("");
       setStep(1);
