@@ -83,6 +83,8 @@ function environment() {
     env: {
       EMAIL_FROM: "hello@vietnam-living-summit.com",
       REGISTRATION_NOTIFY_TO: "marketing@tubudd.com",
+      PARTNER_FOLLOW_UP_DAYS: "3",
+      PARTNER_CONTACT_EMAIL: "marketing@tubudd.com",
       REGISTRATIONS: database,
       EMAIL: { async send(email) { sent.push(email); return { messageId: `test-${sent.length}` }; } },
     },
@@ -112,23 +114,45 @@ test("partner enquiry sends the selected partnership type", async () => {
   assert.equal(response.status, 200);
   assert.match(sent[0].text, /Partnership interests: Exhibiting/);
   assert.equal(sent[1].to.email, partner.email);
-  assert.equal(sent[1].subject, "We received your partnership enquiry");
+  assert.equal(sent[1].subject, "Welcome to the Vietnam Living Summit Alliance!");
   assert.notEqual(sent[1].subject, "Your VLS2026 Spot is Confirmed");
+  assert.match(sent[1].text, /^Dear Test Partner,/);
+  assert.match(sent[1].text, /We're excited to have Example Co on board/);
+  assert.match(sent[1].text, /within 3 business days/);
+  assert.match(sent[1].text, /✉️ marketing@tubudd.com/);
+  assert.ok(!sent[1].text.includes("[Name]"));
+  assert.ok(!sent[1].text.includes("[X]"));
 });
 
 test("partner acknowledgement follows the selected site language", async () => {
   const { sent, env } = environment();
   assert.equal((await handleRegistrationRequest(request({ ...partner, language: "vi" }), env)).status, 200);
   assert.equal(sent[1].to.email, partner.email);
-  assert.equal(sent[1].subject, "Đã nhận thông tin hợp tác của bạn");
-  assert.match(sent[1].text, /^Chào Test Partner,/);
-  assert.match(sent[1].text, /Chúng tôi đã nhận được thông tin hợp tác của bạn/);
+  assert.equal(sent[1].subject, "Bạn đã đăng ký tham gia thành công Liên minh Vietnam Living Summit");
+  assert.match(sent[1].text, /^Kính gửi Test Partner,/);
+  assert.match(sent[1].text, /có Example Co đồng hành/);
+  assert.match(sent[1].text, /trong vòng 3 ngày làm việc/);
+  assert.match(sent[1].text, /✉️ marketing@tubudd.com/);
 
   assert.equal((await handleRegistrationRequest(request({ ...partner, language: "en" }), env)).status, 200);
   assert.equal(sent[3].to.email, partner.email);
-  assert.equal(sent[3].subject, "We received your partnership enquiry");
-  assert.match(sent[3].text, /^Hi Test Partner,/);
-  assert.match(sent[3].text, /We received your partnership enquiry/);
+  assert.equal(sent[3].subject, "Welcome to the Vietnam Living Summit Alliance!");
+  assert.match(sent[3].text, /^Dear Test Partner,/);
+  assert.match(sent[3].text, /Your alliance registration has been confirmed/);
+});
+
+test("partner confirmation is withheld when its promised details are missing", async () => {
+  const { sent, env } = environment();
+  delete env.PARTNER_FOLLOW_UP_DAYS;
+  const response = await handleRegistrationRequest(request(partner), env);
+  assert.equal(response.status, 503);
+  assert.equal(sent.length, 0);
+
+  env.PARTNER_FOLLOW_UP_DAYS = "3";
+  delete env.PARTNER_CONTACT_EMAIL;
+  const missingContact = await handleRegistrationRequest(request(partner), env);
+  assert.equal(missingContact.status, 503);
+  assert.equal(sent.length, 0);
 });
 
 test("invalid or cross-site submissions send no email", async () => {
@@ -144,6 +168,15 @@ test("notification HTML escapes applicant input", async () => {
   assert.equal((await handleRegistrationRequest(request({ ...partner, message: "<script>alert(1)</script>" }), env)).status, 200);
   assert.ok(sent[0].html.includes("&lt;script&gt;"));
   assert.ok(!sent[0].html.includes("<script>"));
+});
+
+test("partner confirmation HTML escapes the contact and company names", async () => {
+  const { sent, env } = environment();
+  const response = await handleRegistrationRequest(request({ ...partner, fullName: "<Alex>", companyName: "<Company>" }), env);
+  assert.equal(response.status, 200);
+  assert.ok(sent[1].html.includes("Dear &lt;Alex&gt;"));
+  assert.ok(sent[1].html.includes("&lt;Company&gt; on board"));
+  assert.ok(!sent[1].html.includes("<Company>"));
 });
 
 test("attendee confirmation escapes the name and a retry does not send twice", async () => {

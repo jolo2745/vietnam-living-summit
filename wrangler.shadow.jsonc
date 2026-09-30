@@ -7,6 +7,8 @@
   "vars": {
     "REGISTRATION_URL": "https://vietnam-living-summit-shadow.jhelyar04.workers.dev/#event-signup",
     "REGISTRATION_NOTIFY_TO": "marketing@tubudd.com",
+    "PARTNER_FOLLOW_UP_DAYS": "3",
+    "PARTNER_CONTACT_EMAIL": "marketing@tubudd.com",
     "EMAIL_FROM": "hello@vietnam-living-summit.com"
   },
   "send_email": [

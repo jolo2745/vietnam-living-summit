@@ -141,6 +141,20 @@ function attendeeConfirmation(name) {
   };
 }
 
+function partnerConfirmation(registration, followUpDays, contactEmail) {
+  const vietnamese = registration.language === "vi";
+  const body = vietnamese
+    ? `Kính gửi ${registration.fullName},\n\nCảm ơn quý đối tác đã tham gia Liên minh Vietnam Living Summit! Chúng tôi rất vui khi có ${registration.companyName} đồng hành cùng chúng tôi xây dựng một hệ sinh thái đối tác dịch vụ uy tín, dài hạn dành cho người nước ngoài tại Việt Nam.\n\nLiên minh không chỉ đồng hành cùng nhau trong sự kiện lần này mà là khởi đầu cho một mối quan hệ hợp tác lâu dài, nơi chúng ta kết nối cộng đồng và cùng nhau phát triển trong việc phục vụ người nước ngoài, nhà đầu tư và tất cả những ai đang xây dựng cuộc sống tại đây.\n\nĐăng ký tham gia liên minh của quý công ty đã được xác nhận\nYêu cầu tham gia liên minh của bạn đã được tiếp nhận và xử lý.\n\n--------------------------\nVietnam Living Summit 2026\n📅 Ngày 30 tháng 10, 2026\n📍 Hà Nội\n\n--------------------------\nCác bước tiếp theo sau email này:\nBạn sẽ được thêm vào nhóm Zalo chung của Liên minh, nơi chúng tôi sẽ chia sẻ các bước tiếp theo và cùng phối hợp\nĐội ngũ chúng tôi sẽ liên hệ trong vòng ${followUpDays} ngày làm việc để trao đổi cụ thể về cách hợp tác — tại sự kiện và sau đó\nBạn sẽ nhận được thông tin chi tiết và vé sự kiện gần ngày diễn ra\n\nCó thắc mắc?\nLiên hệ với chúng tôi bất cứ lúc nào:\n📞 Ms. Thuý Anh — +84 966 743 471\n✉️ ${contactEmail}\n\nRất mong được cùng nhau xây dựng một liên minh bền vững và tạo ra nhiều giá trị.\nTrân trọng,\nThuy Anh\nVLS 2026 Organizing Team`
+    : `Dear ${registration.fullName},\n\nThank you for joining the Vietnam Living Summit Alliance! We're excited to have ${registration.companyName} on board as we build a long-term ecosystem of trusted service partners for foreign residents in Vietnam.\n\nThe Alliance isn't just about standing together for this one event — it's the start of an ongoing partnership, where we connect our communities and grow together in serving expats, investors, and everyone building a life here.\n\nYour alliance registration has been confirmed\nYour request to join the Alliance has been received and processed.\n\n--------------------------\nVietnam Living Summit 2026\n📅 October 30, 2026\n📍 Hanoi\n\n--------------------------\nWhat happens next:\nYou'll be added to our Alliance Zalo group, where we'll share next steps and coordinate together\nOur team will reach out within ${followUpDays} business days to walk through how we'll collaborate — at the event and beyond\nYou'll receive event details and passes closer to the date\n\nHave questions?\nFeel free to reach out anytime:\n📞 Ms. Thuý Anh — +84 966 743 471\n✉️ ${contactEmail}\n\nWe look forward to building a lasting alliance together and creating great value along the way.\nWarm regards,\nThuy Anh\nVLS 2026 Organizing Team`;
+  return {
+    subject: vietnamese
+      ? "Bạn đã đăng ký tham gia thành công Liên minh Vietnam Living Summit"
+      : "Welcome to the Vietnam Living Summit Alliance!",
+    text: body,
+    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#132d3e">${escapeHtml(body).replaceAll("\n", "<br>")}</div>`,
+  };
+}
+
 async function saveAttendee(database, id, registration) {
   const result = await database.prepare(`INSERT OR IGNORE INTO attendee_registrations (
     id, full_name, email, phone, nationality, residency_status, role, interests_json,
@@ -238,6 +252,11 @@ export async function handleRegistrationRequest(request, env) {
   }
 
   if (!env.REGISTRATION_NOTIFY_TO) return json({ message: "Registration delivery is not connected." }, 503);
+  const followUpDays = Number(env.PARTNER_FOLLOW_UP_DAYS);
+  const contactEmail = typeof env.PARTNER_CONTACT_EMAIL === "string" ? env.PARTNER_CONTACT_EMAIL.trim() : "";
+  if (!Number.isSafeInteger(followUpDays) || followUpDays < 1 || !validEmail(contactEmail)) {
+    return json({ message: "Partnership confirmation is not configured." }, 503);
+  }
 
   const details = notification(registration);
   let result;
@@ -254,18 +273,10 @@ export async function handleRegistrationRequest(request, env) {
   if (!result?.messageId) return json({ message: "We could not confirm your registration right now." }, 502);
 
   try {
-    const vietnamese = registration.language === "vi";
-    const subject = vietnamese ? "Đã nhận thông tin hợp tác của bạn" : "We received your partnership enquiry";
-    const followUp = vietnamese ? "thông tin hợp tác" : "partnership enquiry";
-    const acknowledgement = vietnamese
-      ? `Chào ${registration.fullName},\n\nCảm ơn bạn đã quan tâm đến Vietnam Living Summit 2026. Chúng tôi đã nhận được ${followUp} của bạn và sẽ liên hệ về các bước tiếp theo.\n\nĐội ngũ Vietnam Living Summit`
-      : `Hi ${registration.fullName},\n\nThank you for your interest in Vietnam Living Summit 2026. We received your ${followUp} and will follow up with the next steps.\n\nVietnam Living Summit team`;
     await env.EMAIL.send({
       from: { email: env.EMAIL_FROM, name: "Vietnam Living Summit" },
       to: { email: registration.email, name: registration.fullName },
-      subject,
-      text: acknowledgement,
-      html: `<div style="white-space:pre-line;font-family:Arial,sans-serif;line-height:1.6">${escapeHtml(acknowledgement).replaceAll("\n", "<br>")}</div>`,
+      ...partnerConfirmation(registration, followUpDays, contactEmail),
     });
   } catch (error) {
     console.error("Registration acknowledgement failed", error?.code, error?.message);
