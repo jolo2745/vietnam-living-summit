@@ -196,12 +196,13 @@
 
 .intro strong {
   padding-inline: .08em;
-  border-radius: 4px;
   color: var(--accent-ink);
-  background: linear-gradient(transparent 58%, rgba(255, 143, 64, .24) 58%);
   font-weight: 800;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 143, 64, .58);
+  text-decoration-thickness: .12em;
+  text-underline-offset: .2em;
+  text-decoration-skip-ink: auto;
 }
 
 .proof {

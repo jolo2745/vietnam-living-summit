@@ -1,4 +1,5 @@
 import { handleBookletRequest } from "./booklet-email.mjs";
+import { handleRegistrationRequest } from "./registration.mjs";
 
 export default {
   async fetch(request, env) {
@@ -14,7 +15,9 @@ export default {
         },
       });
     }
-    const response = pathname === "/api/booklet"
+    const response = pathname === "/api/registration"
+      ? await handleRegistrationRequest(request, env)
+      : pathname === "/api/booklet"
       ? await handleBookletRequest(request, env)
       : pathname === "/robots.txt"
       ? new Response("User-agent: *\nDisallow: /\n", {

@@ -1,7 +1,7 @@
 "use client";
 
-import { attendeeEmbeddedFormUrl, businessEmbeddedFormUrl } from "../../relocate/links";
 import { useLanguage } from "../../i18n";
+import { NativeRegistrationForm } from "./NativeRegistrationForm";
 import styles from "./EventSignup.module.css";
 
 type EventSignupProps = {
@@ -9,20 +9,16 @@ type EventSignupProps = {
 };
 
 export function EventSignup({ source }: EventSignupProps) {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const isBusiness = source === "business";
-  const baseFormUrl = isBusiness ? businessEmbeddedFormUrl : attendeeEmbeddedFormUrl;
-  const formUrl = `${baseFormUrl}&hl=${language}`;
   const attendeeSteps = [
     {
       title: t("Register online", "Đăng ký trực tuyến"),
-      description: language === "vi"
-        ? <>Điền biểu mẫu đăng ký tại <a href="https://bit.ly/vietnamlivingsummit2026" target="_blank" rel="noreferrer">bit.ly/vietnamlivingsummit2026</a> với họ tên và thông tin liên hệ để giữ chỗ.</>
-        : <>Fill out the registration form at <a href="https://bit.ly/vietnamlivingsummit2026" target="_blank" rel="noreferrer">bit.ly/vietnamlivingsummit2026</a> with your name and contact details to reserve your spot.</>,
+      description: t("Fill in the form on this page with your name and contact details.", "Điền biểu mẫu ngay trên trang này với họ tên và thông tin liên hệ của bạn."),
     },
     {
       title: t("Get confirmation", "Nhận xác nhận"),
-      description: t("You'll receive a confirmation email with your event pass and all the details you need for the day.", "Bạn sẽ nhận được email xác nhận kèm vé tham dự và mọi thông tin cần thiết cho ngày diễn ra sự kiện."),
+      description: t("We'll email you with the next steps and event details.", "Chúng tôi sẽ gửi email về các bước tiếp theo và thông tin sự kiện."),
     },
     {
       title: t("Mark your calendar", "Đánh dấu lịch"),
@@ -54,7 +50,7 @@ export function EventSignup({ source }: EventSignupProps) {
           </p>
           <dl>
             <div><dt>{t("Where", "Địa điểm")}</dt><dd>{t("Hanoi, Vietnam", "Hà Nội, Việt Nam")}</dd></div>
-            <div><dt>{t("Time", "Thời gian")}</dt><dd>8AM–12AM, 30/10/2026</dd></div>
+            <div><dt>{t("Time", "Thời gian")}</dt><dd>8:30 AM–12:00 PM, 30/10/2026</dd></div>
             <div>
               <dt>{isBusiness ? t("Format", "Hình thức") : t("Entry", "Vé vào cửa")}</dt>
               <dd>{isBusiness ? t("Summit + partner gathering", "Tham gia Liên minh và Event \"VLS 2026\"") : t("Free for attendees", "Miễn phí cho người tham dự")}</dd>
@@ -79,15 +75,7 @@ export function EventSignup({ source }: EventSignupProps) {
           </div>
         ) : null}
 
-        <div className={styles.embed}>
-          <iframe
-            src={formUrl}
-            title={isBusiness ? t("Vietnam Living Summit 2026 business partnership form", "Biểu mẫu đối tác doanh nghiệp Vietnam Living Summit 2026") : t("Vietnam Living Summit 2026 event registration form", "Biểu mẫu đăng ký Vietnam Living Summit 2026")}
-            loading="lazy"
-          >
-            {t("Loading the event registration form…", "Đang tải biểu mẫu đăng ký sự kiện…")}
-          </iframe>
-        </div>
+        <div className={styles.embed}><NativeRegistrationForm source={source} /></div>
       </div>
     </section>
   );

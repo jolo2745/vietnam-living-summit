@@ -13,7 +13,8 @@
     }
   ],
   "vars": {
-    "REGISTRATION_URL": "https://docs.google.com/forms/d/e/1FAIpQLSfb38vO1XAUqsfDnkSAEq80xFJu-Pva3_LScdxCtn5EaRQggQ/viewform",
+    "REGISTRATION_URL": "https://vietnam-living-summit.com/#event-signup",
+    "REGISTRATION_NOTIFY_TO": "marketing@tubudd.com",
     "EMAIL_FROM": "hello@vietnam-living-summit.com"
   },
   "send_email": [

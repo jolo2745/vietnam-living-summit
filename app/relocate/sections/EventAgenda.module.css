@@ -2,7 +2,9 @@
   position: relative;
   isolation: isolate;
   min-height: calc(100svh - 86px);
-  padding-block: clamp(28px, 4svh, 42px);
+  display: grid;
+  align-items: center;
+  padding-block: clamp(88px, 10svh, 128px);
   overflow: hidden;
   background:
     radial-gradient(circle at 12% 10%, rgba(51, 102, 137, .3), transparent 32%),
@@ -131,6 +133,10 @@
   color: #b9c7d0;
   font-size: clamp(17px, 1.2vw, 19px);
   line-height: 1.65;
+}
+
+@media (max-width: 1160px) {
+  .section { min-height: calc(100svh - 70px); }
 }
 
 @media (max-width: 800px) {

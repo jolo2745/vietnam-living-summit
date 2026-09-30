@@ -18,41 +18,47 @@ export function EventIntroduction() {
             <div className={styles.profileGrid}>
               <article className={styles.profileCard}>
                 <h3>TikTok</h3>
-                <div className={styles.tiktokProfile}>
-                  <span className={styles.tiktokAvatar} aria-hidden="true">♪</span>
-                  <strong>@relocatetovietnam</strong>
-                  <span>{t("Relocate to Vietnam", "Chuyển đến Việt Nam")}</span>
-                  <p>{t("Videos and practical guidance for building a life in Vietnam.", "Video và hướng dẫn thực tế để xây dựng cuộc sống tại Việt Nam.")}</p>
-                  <a href="https://www.tiktok.com/@relocatetovietnam" target="_blank" rel="noreferrer">
-                    {t("View live TikTok profile", "Xem trang TikTok trực tiếp")} <span aria-hidden="true">↗</span>
-                  </a>
+                <div className={styles.profileSurface}>
+                  <div className={styles.tiktokProfile}>
+                    <span className={styles.tiktokAvatar} aria-hidden="true">♪</span>
+                    <strong>@relocatetovietnam</strong>
+                    <span>{t("Relocate to Vietnam", "Chuyển đến Việt Nam")}</span>
+                    <p>{t("Videos and practical guidance for building a life in Vietnam.", "Video và hướng dẫn thực tế để xây dựng cuộc sống tại Việt Nam.")}</p>
+                    <a href="https://www.tiktok.com/@relocatetovietnam" target="_blank" rel="noreferrer">
+                      {t("View live TikTok profile", "Xem trang TikTok trực tiếp")} <span aria-hidden="true">↗</span>
+                    </a>
+                  </div>
                 </div>
               </article>
 
               <article className={styles.profileCard}>
                 <h3>Facebook</h3>
-                <iframe
-                  className={styles.facebookEmbed}
-                  src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61593119474921&tabs=timeline&width=500&height=390&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
-                  title={t("Vietnam Living Summit Facebook profile", "Trang Facebook Vietnam Living Summit")}
-                  width="500"
-                  height="390"
-                  loading="lazy"
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                />
+                <div className={styles.profileSurface}>
+                  <iframe
+                    className={styles.facebookEmbed}
+                    src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61593119474921&tabs=timeline&width=360&height=440&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
+                    title={t("Vietnam Living Summit Facebook profile", "Trang Facebook Vietnam Living Summit")}
+                    width="360"
+                    height="440"
+                    loading="lazy"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  />
+                </div>
               </article>
 
               <article className={styles.profileCard}>
                 <h3>Instagram</h3>
-                <blockquote
-                  className="instagram-media"
-                  data-instgrm-permalink="https://www.instagram.com/vietnam.living.summit/"
-                  data-instgrm-version="14"
-                >
-                  <a href="https://www.instagram.com/vietnam.living.summit/" target="_blank" rel="noreferrer">
-                    {t("View Vietnam Living Summit on Instagram ↗", "Xem Vietnam Living Summit trên Instagram ↗")}
-                  </a>
-                </blockquote>
+                <div className={styles.profileSurface}>
+                  <blockquote
+                    className="instagram-media"
+                    data-instgrm-permalink="https://www.instagram.com/vietnam.living.summit/"
+                    data-instgrm-version="14"
+                  >
+                    <a href="https://www.instagram.com/vietnam.living.summit/" target="_blank" rel="noreferrer">
+                      {t("View Vietnam Living Summit on Instagram ↗", "Xem Vietnam Living Summit trên Instagram ↗")}
+                    </a>
+                  </blockquote>
+                </div>
               </article>
             </div>
           </div>

@@ -27,6 +27,12 @@ The `/api/booklet` Worker endpoint uses the Cloudflare Email Sending binding nam
 The email-ready PDF is served from `public/downloads/TUBUDD-2026-Vietnam-Relocation-Guide.pdf` and attached to each message. It is an optimized copy of the original source document so the complete message remains below Cloudflare's 5 MiB limit. The original PDF at the project root is left unchanged.
 
 The sender, binding, and registration URL are configured in the Wrangler files. The sending domain must remain enabled in Cloudflare Email Sending for delivery to work.
+
+## Event and partner registration
+
+Both registration forms are part of the site. On deployment, `POST /api/registration` is handled by the Cloudflare Worker: it validates the form, emails the details to `REGISTRATION_NOTIFY_TO`, and sends a short acknowledgement to the applicant. The Wrangler configurations set the recipient to `marketing@tubudd.com`. No Google Form or Mailchimp submission is used for these registrations.
+
+The Next.js local preview is a static export and does not serve the Worker API. It shows and validates the forms in the browser; submission can be tested through the Worker handler or after a Worker deployment.
 # Monthly email subscriptions
 
 The booklet form can add people who explicitly opt in to a Mailchimp audience with `pending` status, which triggers the confirmation step before they become marketing subscribers.

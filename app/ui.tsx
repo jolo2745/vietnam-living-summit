@@ -24,11 +24,11 @@ export function Brand({ pageTitle = false }: { pageTitle?: boolean }) {
   );
 }
 
-function HeaderPartnerLogos({ mobile = false }: { mobile?: boolean }) {
+function HeaderPartnerLogos() {
   return (
     <div
       aria-label="TUBUDD and Travellive"
-      className={`header-partner-logos${mobile ? " header-partner-logos-mobile" : ""}`}
+      className="header-partner-logos"
     >
       <Image
         className="header-partner-logo header-partner-logo-tubudd"
@@ -108,7 +108,7 @@ export function Header({ active }: { active?: "relocate" | "partners" }) {
     };
 
     const handleResize = () => {
-      if (window.innerWidth > 900) setIsMenuOpen(false);
+      if (window.innerWidth > 1160) setIsMenuOpen(false);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -132,12 +132,11 @@ export function Header({ active }: { active?: "relocate" | "partners" }) {
           <Link className={active === "relocate" ? "active" : ""} href="/">{t("Moving to Vietnam", "Dành cho người tham dự")}</Link>
           <Link className={active === "partners" ? "active" : ""} href="/partners">{t("Become our partner", "Dành cho doanh nghiệp")}</Link>
         </nav>
+        <HeaderPartnerLogos />
         <div className="header-actions">
-          <HeaderPartnerLogos />
           <a href="mailto:marketing@tubudd.com" className="header-contact">{t("Contact", "Liên hệ")} <span>↗</span></a>
           <LanguageSwitch />
         </div>
-        <HeaderPartnerLogos mobile />
         <button
           aria-controls="mobile-navigation"
           aria-expanded={isMenuOpen}

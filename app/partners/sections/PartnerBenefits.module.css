@@ -95,10 +95,12 @@
 .grid p strong {
   padding-inline: .05em;
   color: var(--amber);
-  background: linear-gradient(transparent 58%, rgba(255, 143, 64, .25) 58%);
   font-weight: 800;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 143, 64, .58);
+  text-decoration-thickness: .12em;
+  text-underline-offset: .2em;
+  text-decoration-skip-ink: auto;
 }
 
 @media (hover: hover) {

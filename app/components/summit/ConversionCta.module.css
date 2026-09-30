@@ -8,36 +8,8 @@
   overflow: hidden;
   color: var(--peach);
   background:
-    radial-gradient(circle at 50% 28%, rgba(44, 100, 137, .28), transparent 36%),
-    radial-gradient(circle at 8% 100%, rgba(220,101,50,.1), transparent 30%),
+    radial-gradient(circle at 50% 46%, rgba(44, 100, 137, .34) 0%, rgba(27, 73, 102, .18) 42%, transparent 78%),
     linear-gradient(145deg, #071522, #0d2a3e 54%, #101f2b);
-}
-
-.section::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background:
-    radial-gradient(circle at 16% 18%, rgba(255, 97, 27, .72) 0 2px, transparent 3px),
-    radial-gradient(circle at 82% 76%, rgba(255, 143, 64, .38) 0 1.5px, transparent 2.5px);
-  background-size: 38px 38px, 28px 28px;
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 22%, #000 92%);
-  mask-image: radial-gradient(circle at 50% 50%, transparent 22%, #000 92%);
-  opacity: .34;
-  pointer-events: none;
-}
-
-.section::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: min(76vw, 1000px);
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 143, 64, .12);
-  border-radius: 50%;
-  box-shadow: 0 0 0 90px rgba(255, 143, 64, .025), 0 0 0 180px rgba(255, 143, 64, .018);
-  pointer-events: none;
 }
 
 .inner {

@@ -146,12 +146,10 @@ export function Industries({ context = "business" }: IndustriesProps) {
                 ) : (
                   <a
                     className={styles.expertLink}
-                    href="https://docs.google.com/forms/d/e/1FAIpQLSf4kFJhpP0Rrw4Cvhb6J_pNA8h0Cb9P_cz7hpux1KVHHvUEsw/viewform?usp=header"
-                    target="_blank"
-                    rel="noreferrer"
+                    href="#event-signup"
                     aria-label={`${t("Join the Alliance for", "Tham gia Liên minh trong lĩnh vực")} ${title[languageIndex]}`}
                   >
-                    {t("Join the Alliance", "Tham gia Liên minh")} <span aria-hidden="true">↗</span>
+                    {t("Join the Alliance", "Tham gia Liên minh")} <span aria-hidden="true">↓</span>
                   </a>
                 )}
               </div>

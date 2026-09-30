@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useLanguage } from "../../i18n";
 import styles from "./BookletSignup.module.css";
@@ -59,12 +60,14 @@ export function BookletSignup({ source }: BookletSignupProps) {
           <p className={styles.intro}>{t("Get the Vietnam relocation roadmap booklet and the summit registration link delivered to your inbox.", "Nhận cẩm nang lộ trình chuyển đến Việt Nam và liên kết đăng ký tham gia sự kiện ngay trong hộp thư của bạn.")}</p>
         </div>
 
-        <div className={styles.booklet} aria-hidden="true">
-          <span>Vietnam Living Summit</span>
-          <strong>{language === "vi"
-            ? <>Lộ trình định cư,<br />làm việc và đầu tư<br />tại Việt Nam</>
-            : <>Relocation<br />Roadmap</>}</strong>
-          <small>Vietnam · 2026</small>
+        <div className={styles.booklet}>
+          <Image
+            className={styles.bookletImage}
+            src="/images/relocation-guide-cover.jpg"
+            alt={t("Cover of The 2026 Relocate to Vietnam Guide & Checklist", "Bìa Cẩm nang và danh sách kiểm tra chuyển đến Việt Nam 2026")}
+            width={794}
+            height={1123}
+          />
         </div>
 
         <form className={styles.form} onSubmit={submit}>

@@ -21,10 +21,10 @@ export function RelocateHero() {
         <p className={shared.showcaseTagline}>{t("Relocate. Invest. Build a life in Vietnam.", "Hệ sinh thái dành cho người nước ngoài định cư, làm việc và đầu tư tại Việt Nam.")}</p>
         <dl className={shared.showcaseDetails} aria-label={t("Event details", "Thông tin sự kiện")}>
           <div><dt>{t("Location", "Địa điểm")}</dt><dd>{t("Hanoi, Vietnam", "Hà Nội, Việt Nam")}</dd></div>
-          <div><dt>{t("Time", "Thời gian")}</dt><dd>8AM – 12AM · 30/10/2026</dd></div>
+          <div><dt>{t("Time", "Thời gian")}</dt><dd>8:30 AM–12:00 PM · 30/10/2026</dd></div>
         </dl>
         <div className={shared.showcaseActions}>
-          <a className={shared.showcasePrimary} href="/">{t("Register for free", "Đăng ký miễn phí")} <span aria-hidden="true">↘</span></a>
+          <a className={shared.showcasePrimary} href="#event-signup">{t("Register for free", "Đăng ký miễn phí")} <span aria-hidden="true">↘</span></a>
           <a className={shared.showcaseSecondary} href="/partners/">{t("Become our partner", "Trở thành đối tác")} <span aria-hidden="true">↗</span></a>
         </div>
         <dl className={shared.showcaseFacts}>

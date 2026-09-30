@@ -48,20 +48,23 @@ em { color:var(--amber); font-family:var(--font-numerals); font-weight:400; }
 .site-header-at-top { background:transparent; border-bottom-color:transparent; box-shadow:none; backdrop-filter:none; }
 .site-header-hidden { transform:translateY(calc(-100% - 1px)); }
 .site-header { color:var(--peach); }
-.site-header-inner { height:86px; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; position:relative; z-index:3; }
+.site-header-inner { height:86px; display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:clamp(16px,1.8vw,28px); position:relative; z-index:3; }
 .site-header-inner > .brand { justify-self:start; }
-.header-actions { justify-self:end; display:flex; align-items:center; gap:18px; }
-.header-partner-logos { display:flex; align-items:center; gap:12px; padding-right:18px; }
-.header-partner-logos-mobile { display:none; }
+.header-actions { display:flex; align-items:center; gap:clamp(10px,1.3vw,18px); }
+.header-partner-logos { display:flex; align-items:center; gap:clamp(8px,1vw,12px); }
 .header-partner-logo { width:auto; object-fit:contain; flex:0 0 auto; }
 .header-partner-logo-tubudd { width:77px; height:16px; }
 .header-partner-logo-travellive { width:55px; height:22px; filter:brightness(0) invert(1); }
 .header-partner-divider { width:1px; height:24px; background:rgba(255,243,235,.2); }
-.desktop-nav { height:100%; display:flex; align-items:center; gap:36px; font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:#858b8e; }
-.desktop-nav a { height:100%; display:flex; align-items:center; padding:0; box-shadow:inset 0 0 transparent; transition:color .2s ease,box-shadow .2s ease; }
-.desktop-nav { color:#c0cdd6; }
-.desktop-nav a:hover { color:var(--orange-soft); }
-.desktop-nav .active { color:var(--peach); font-weight:800; box-shadow:none; }
+.desktop-nav { position:absolute; top:0; left:50%; height:100%; width:max-content; display:flex; align-items:center; gap:clamp(18px,2.5vw,42px); color:#c0cdd6; font-size:11px; text-transform:uppercase; letter-spacing:.12em; transform:translateX(-50%); }
+.desktop-nav a { position:relative; height:100%; display:flex; align-items:center; white-space:nowrap; transition:color .2s ease; }
+.desktop-nav a::after { content:""; position:absolute; right:0; bottom:22px; left:0; height:2px; background:var(--orange-soft); transform:scaleX(0); transform-origin:left; transition:transform .24s ease; }
+.desktop-nav a:hover,.desktop-nav a:focus-visible { color:var(--orange-soft); }
+.desktop-nav a:hover::after,.desktop-nav a:focus-visible::after,.desktop-nav .active::after { transform:scaleX(1); }
+.desktop-nav .active { color:var(--peach); font-weight:800; }
+.desktop-nav a:focus-visible,.header-contact:focus-visible { outline:2px solid var(--orange-soft); outline-offset:4px; }
+.header-contact { white-space:nowrap; transition:color .2s ease; }
+.header-contact:hover { color:var(--orange-soft); }
 .language-switch { display:flex; align-items:center; gap:6px; color:#aebdca; font-size:10px; font-weight:700; letter-spacing:.08em; }
 .language-switch button { min-width:28px; padding:7px 5px; border:0; border-radius:var(--radius-pill); background:transparent; color:inherit; font:inherit; letter-spacing:inherit; cursor:pointer; transition:background .2s ease,color .2s ease; }
 .language-switch button:hover { color:var(--peach); }
@@ -85,15 +88,16 @@ em { color:var(--amber); font-family:var(--font-numerals); font-weight:400; }
 .footer-heading { min-height:24px; margin-bottom:12px; color:var(--peach)!important; font-size:12px; font-weight:800; letter-spacing:.13em; line-height:1.4; text-transform:uppercase; text-decoration:underline; text-decoration-color:rgba(220,101,50,.86); text-decoration-thickness:1px; text-underline-offset:7px; }
 .footer-column > a:not(.footer-heading) { max-width:245px; }
 .footer-social a span,.footer-contact a span { color:var(--orange-soft); }
-@media(max-width:900px){
-  .site-header-inner { height:70px; grid-template-columns:1fr auto auto; gap:13px; }
+@media(max-width:1160px){
+  .site-header-inner { height:70px; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:13px; }
   .site-logo { height:48px; }
   .desktop-nav,.site-header .header-actions { display:none; }
-  .header-partner-logos-mobile { justify-self:end; display:flex; gap:9px; padding:0; }
-  .header-partner-logos-mobile .header-partner-logo-tubudd { width:58px; height:12px; }
-  .header-partner-logos-mobile .header-partner-logo-travellive { width:40px; height:16px; }
-  .header-partner-logos-mobile .header-partner-divider { height:18px; }
-  .menu-toggle { width:42px; height:42px; padding:0; border:0; border-radius:50%; background:var(--amber); display:flex; flex-direction:column; justify-content:center; align-items:center; cursor:pointer; position:relative; z-index:3; }
+  .header-partner-logos { justify-self:center; gap:9px; }
+  .header-partner-logos .header-partner-logo-tubudd { width:58px; height:12px; }
+  .header-partner-logos .header-partner-logo-travellive { width:40px; height:16px; }
+  .header-partner-logos .header-partner-divider { height:18px; }
+  .menu-toggle { width:42px; height:42px; padding:0; justify-self:end; border:0; border-radius:50%; background:var(--amber); display:flex; flex-direction:column; justify-content:center; align-items:center; cursor:pointer; position:relative; z-index:3; transition:transform .2s ease,background .2s ease; }
+  .menu-toggle:hover { transform:scale(1.06); background:var(--orange-soft); }
   .menu-toggle span { display:block; width:17px; height:2px; border-radius:99px; background:#0b0b0b; transition:opacity 180ms ease,transform 180ms ease,width 180ms ease; }
   .menu-toggle span + span { margin-top:4px; }
   .menu-toggle span:nth-child(2) { width:12px; }
@@ -101,7 +105,7 @@ em { color:var(--amber); font-family:var(--font-numerals); font-weight:400; }
   .menu-toggle-open span:nth-child(2) { opacity:0; transform:scaleX(0); }
   .menu-toggle-open span:last-child { transform:translateY(-6px) rotate(-45deg); }
   .mobile-backdrop { display:block; position:fixed; inset:0; z-index:1; padding:0; border:0; background:rgba(3,31,42,.34); }
-  .mobile-nav { position:absolute; z-index:2; top:100%; left:0; right:0; display:grid; padding:10px 18px 22px; background:var(--header-surface); border-top:1px solid rgba(255,243,235,.14); border-radius:0 0 var(--radius-card) var(--radius-card); box-shadow:0 24px 50px rgba(0,0,0,.35); animation:mobile-menu-in 220ms cubic-bezier(.22,1,.36,1); }
+  .mobile-nav { position:absolute; z-index:2; top:100%; left:0; right:0; display:grid; max-height:calc(100dvh - 70px); overflow-y:auto; padding:10px 18px 22px; background:var(--header-surface); border-top:1px solid rgba(255,243,235,.14); border-radius:0 0 var(--radius-card) var(--radius-card); box-shadow:0 24px 50px rgba(0,0,0,.35); animation:mobile-menu-in 220ms cubic-bezier(.22,1,.36,1); }
   .mobile-nav a { min-height:72px; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:16px; align-items:center; padding:8px 4px; border-bottom:1px solid rgba(255,243,235,.14); color:var(--peach); font-size:clamp(20px,5.5vw,27px); font-weight:700; letter-spacing:-.035em; }
   .mobile-nav-arrow { width:34px; height:34px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,143,64,.34); border-radius:50%; color:var(--orange-soft); font-size:15px; }
   .menu-toggle:focus-visible,.mobile-nav a:focus-visible { outline:2px solid var(--orange-soft); outline-offset:4px; }
@@ -120,10 +124,10 @@ em { color:var(--amber); font-family:var(--font-numerals); font-weight:400; }
 @media(max-width:560px){
   .site-header-inner { gap:10px; }
   .site-header .site-logo { height:43px; }
-  .header-partner-logos-mobile { gap:7px; }
-  .header-partner-logos-mobile .header-partner-logo-tubudd { width:48px; height:10px; }
-  .header-partner-logos-mobile .header-partner-logo-travellive { width:35px; height:14px; }
-  .header-partner-logos-mobile .header-partner-divider { height:15px; }
+  .header-partner-logos { gap:7px; }
+  .header-partner-logos .header-partner-logo-tubudd { width:48px; height:10px; }
+  .header-partner-logos .header-partner-logo-travellive { width:35px; height:14px; }
+  .header-partner-logos .header-partner-divider { height:15px; }
   .footer-grid { grid-template-columns:1fr; gap:42px; }
   .footer-about { padding-bottom:4px; }
   .footer-grid .footer-tagline { max-width:420px; }

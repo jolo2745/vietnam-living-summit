@@ -11,7 +11,7 @@ export function PartnerFinalCta() {
         </div>
         <div className={styles.action}>
           <p>Tell us what your business does best and how you want to contribute.</p>
-          <a className={`${shared.button} ${styles.button}`} href="mailto:marketing@tubudd.com?subject=Vietnam%20Living%20Summit%20Partnership">Start a conversation <span>↗</span></a>
+          <a className={`${shared.button} ${styles.button}`} href="#event-signup">Start a conversation <span>↓</span></a>
         </div>
       </div>
     </section>
