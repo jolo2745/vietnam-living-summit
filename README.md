@@ -22,7 +22,7 @@ npm run deploy
 
 ## Roadmap booklet email
 
-The `/api/booklet` Worker endpoint uses the Cloudflare Email Sending binding named `EMAIL`. It sends from `hello@vietnam-living-summit.com` with no reply-to address and includes the event-registration link.
+The `/api/booklet` Worker endpoint sends the download-link email through the Cloudflare Email Sending binding named `EMAIL`. It sends from `hello@vietnam-living-summit.com` with no reply-to address and includes the event-registration link. Booklet requests are not stored in D1.
 
 The email contains a download link to `public/downloads/TUBUDD-2026-Vietnam-Relocation-Guide.pdf`; the PDF is not attached. The original PDF at the project root is left unchanged.
 
@@ -30,11 +30,11 @@ The sender, binding, and registration URL are configured in the Wrangler files. 
 
 ## Event and partner registration
 
-Both registration forms are part of the site. On deployment, `POST /api/registration` is handled by the Cloudflare Worker. Attendee submissions are validated and saved to the private Cloudflare D1 `attendee_registrations` table before the confirmation email is sent. The email subject is **Your VLS2026 Spot is Confirmed**, and replies to `hello@vietnam-living-summit.com` are forwarded to `marketing@tubudd.com` through Cloudflare Email Routing. A separate notification with the registration details is also sent to `REGISTRATION_NOTIFY_TO` (`marketing@tubudd.com`). Partner enquiries receive a confirmation in the site language selected when the form is submitted (`EN` or `VI`). `PARTNER_FOLLOW_UP_DAYS` and `PARTNER_CONTACT_EMAIL` must be set before the partner form accepts submissions, so the confirmation never sends an unfilled timeline or contact address. No Google Form or Mailchimp submission is used for these registrations.
+Both registration forms are part of the site. On deployment, `POST /api/registration` is handled by the Cloudflare Worker. Attendee submissions are validated and saved to the private Cloudflare D1 `attendee_registrations` table before the confirmation email is sent. The email subject is **Your VLS2026 Spot is Confirmed**, and replies to `hello@vietnam-living-summit.com` are forwarded to `marketing@tubudd.com` through Cloudflare Email Routing. A separate notification with the registration details is also sent to `REGISTRATION_NOTIFY_TO` (`marketing@tubudd.com`). Partner enquiries are saved to `partner_enquiries` before email delivery and receive a confirmation in the site language selected when the form is submitted (`EN` or `VI`). `PARTNER_FOLLOW_UP_DAYS` and `PARTNER_CONTACT_EMAIL` must be set before the partner form accepts submissions, so the confirmation never sends an unfilled timeline or contact address. No Google Form or Mailchimp submission is used for these registrations.
 
-Shadow and production have separate APAC D1 databases: `vls2026-attendees-shadow` and `vls2026-attendees`. Both are bound as `REGISTRATIONS` only in their respective Workers; there is no public attendee-list route. The table contains contact details, answers, optional consultation requests, the future-updates choice, registration time, and confirmation delivery status. See `migrations/0001_attendee_registrations.sql` for the exact schema. Authorized Cloudflare account users can inspect or export records in D1. There is no automatic retention or deletion rule yet.
+Shadow and production have separate APAC D1 databases: `vls2026-attendees-shadow` and `vls2026-attendees`. Both are bound as `REGISTRATIONS` only in their respective Workers; there is no public submission-list route. The tables contain attendee details and answers and partner enquiry details, along with submission times and email delivery status. See the `migrations` directory for the schemas. Authorized Cloudflare account users can inspect or export records in D1. There is no automatic retention or deletion rule yet.
 
-Before deploying a fresh environment, apply its migration with `wrangler d1 migrations apply <database-name> --remote --config <wrangler-config>`. The two databases above were created and migrated on 2026-09-30; both were empty after migration. Do not copy attendee data between shadow and production.
+Before deploying a fresh environment, apply its migrations with `wrangler d1 migrations apply <database-name> --remote --config <wrangler-config>`. Do not copy submission data between shadow and production.
 
 The Next.js local preview is a static export and does not serve the Worker API. It shows and validates the forms in the browser; submission can be tested through the Worker handler or after a Worker deployment.
 # Monthly email subscriptions

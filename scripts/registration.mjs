@@ -243,6 +243,31 @@ async function updateConfirmation(database, id, status, messageId = null) {
   if (!result?.success || result.meta?.changes !== 1) throw new Error("Confirmation status update failed");
 }
 
+async function savePartner(database, id, registration) {
+  const result = await database.prepare(`INSERT OR IGNORE INTO partner_enquiries (
+    id, full_name, email, phone, company_name, industry, company_website,
+    partnership_types_json, message, language
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(
+    id, registration.fullName, registration.email, registration.phone, registration.companyName,
+    registration.industry, registration.companyWebsite, JSON.stringify(registration.partnershipTypes),
+    registration.message, registration.language,
+  ).run();
+  if (!result?.success) throw new Error("Partner enquiry insert failed");
+  if (result.meta?.changes) return { teamStatus: "pending", confirmationStatus: "pending" };
+
+  const existing = await database.prepare(`SELECT email, company_name, team_notification_status,
+    confirmation_status FROM partner_enquiries WHERE id = ?`).bind(id).first();
+  if (!existing || existing.email !== registration.email || existing.company_name !== registration.companyName) return null;
+  return { teamStatus: existing.team_notification_status, confirmationStatus: existing.confirmation_status };
+}
+
+async function updatePartnerDelivery(database, id, column, status, messageId = null) {
+  const prefix = column === "team" ? "team_notification" : "confirmation";
+  const result = await database.prepare(`UPDATE partner_enquiries SET ${prefix}_status = ?,
+    ${prefix}_message_id = ? WHERE id = ?`).bind(status, messageId, id).run();
+  if (!result?.success || result.meta?.changes !== 1) throw new Error("Partner delivery status update failed");
+}
+
 export async function handleRegistrationRequest(request, env) {
   if (request.method !== "POST") return json({ message: "Method not allowed." }, 405);
   const requestUrl = new URL(request.url);
@@ -313,36 +338,60 @@ export async function handleRegistrationRequest(request, env) {
   }
 
   if (!env.REGISTRATION_NOTIFY_TO) return json({ message: "Registration delivery is not connected." }, 503);
+  if (!validRequestId(body.requestId)) return json({ message: "Invalid registration ID." }, 400);
+  if (!env.REGISTRATIONS) return json({ message: "Registration storage is not connected." }, 503);
   const followUpDays = Number(env.PARTNER_FOLLOW_UP_DAYS);
   const contactEmail = typeof env.PARTNER_CONTACT_EMAIL === "string" ? env.PARTNER_CONTACT_EMAIL.trim() : "";
   if (!Number.isSafeInteger(followUpDays) || followUpDays < 1 || !validEmail(contactEmail)) {
     return json({ message: "Partnership confirmation is not configured." }, 503);
   }
 
-  const details = notification(registration);
-  let result;
+  let saved;
   try {
-    result = await env.EMAIL.send({
-      from: { email: env.EMAIL_FROM, name: "Vietnam Living Summit" },
-      to: { email: env.REGISTRATION_NOTIFY_TO, name: "Event team" },
-      ...details,
-    });
+    saved = await savePartner(env.REGISTRATIONS, body.requestId, registration);
   } catch (error) {
-    console.error("Registration delivery failed", error?.code, error?.message);
-    return json({ message: "We could not send your registration right now." }, 502);
+    console.error("Partner enquiry storage failed", error?.message);
+    return json({ message: "We could not save your enquiry right now." }, 503);
   }
-  if (!result?.messageId) return json({ message: "We could not confirm your registration right now." }, 502);
+  if (!saved) return json({ message: "Registration ID already used." }, 409);
 
-  try {
-    await env.EMAIL.send({
-      from: { email: env.EMAIL_FROM, name: "Vietnam Living Summit" },
-      to: { email: registration.email, name: registration.fullName },
-      ...partnerConfirmation(registration, followUpDays, contactEmail),
-    });
-  } catch (error) {
-    console.error("Registration acknowledgement failed", error?.code, error?.message);
+  if (saved.teamStatus !== "sent") {
+    try {
+      const result = await env.EMAIL.send({
+        from: { email: env.EMAIL_FROM, name: "Vietnam Living Summit" },
+        to: { email: env.REGISTRATION_NOTIFY_TO, name: "Event team" },
+        ...notification(registration),
+      });
+      if (!result?.messageId) throw new Error("Team notification message ID missing");
+      await updatePartnerDelivery(env.REGISTRATIONS, body.requestId, "team", "sent", result.messageId);
+    } catch (error) {
+      console.error("Partner team notification failed", error?.code, error?.message);
+      try { await updatePartnerDelivery(env.REGISTRATIONS, body.requestId, "team", "failed"); }
+      catch (storageError) { console.error("Partner notification status update failed", storageError?.message); }
+      return json({ message: "Your enquiry was saved, but we could not notify the team. Please try again." }, 502);
+    }
   }
 
-  console.log("Registration accepted", result.messageId, registration.source);
-  return json({ sent: true });
+  let emailSent = saved.confirmationStatus === "sent";
+  if (!emailSent) {
+    try {
+      const result = await env.EMAIL.send({
+        from: { email: env.EMAIL_FROM, name: "Vietnam Living Summit" },
+        to: { email: registration.email, name: registration.fullName },
+        ...partnerConfirmation(registration, followUpDays, contactEmail),
+      });
+      if (!result?.messageId) throw new Error("Partner confirmation message ID missing");
+      emailSent = true;
+      await updatePartnerDelivery(env.REGISTRATIONS, body.requestId, "confirmation", "sent", result.messageId);
+    } catch (error) {
+      console.error("Partner confirmation failed", error?.code, error?.message);
+      if (!emailSent) {
+        try { await updatePartnerDelivery(env.REGISTRATIONS, body.requestId, "confirmation", "failed"); }
+        catch (storageError) { console.error("Partner confirmation status update failed", storageError?.message); }
+      }
+    }
+  }
+
+  console.log("Partner enquiry saved", body.requestId, emailSent ? "confirmed" : "email_failed");
+  return json({ sent: true, emailSent });
 }

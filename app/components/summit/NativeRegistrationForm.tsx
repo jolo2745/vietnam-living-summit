@@ -114,9 +114,11 @@ export function NativeRegistrationForm({ source }: Props) {
         return;
       }
       const result = await response.json() as { registered?: boolean; emailSent?: boolean };
-      setStatus(result.registered && !result.emailSent ? "error" : "success");
+      setStatus(result.emailSent ? "success" : "error");
       setMessage(isBusiness
-        ? t("Thank you. We've received your partnership enquiry and will be in touch.", "Cảm ơn bạn. Chúng tôi đã nhận được thông tin hợp tác và sẽ liên hệ lại.")
+        ? result.emailSent
+          ? t("Thank you. We've received your partnership enquiry and will be in touch.", "Cảm ơn bạn. Chúng tôi đã nhận được thông tin hợp tác và sẽ liên hệ lại.")
+          : t("Your partnership enquiry is saved, but we could not send the confirmation email. Please contact marketing@tubudd.com.", "Thông tin hợp tác của bạn đã được lưu, nhưng chúng tôi chưa thể gửi email xác nhận. Vui lòng liên hệ marketing@tubudd.com.")
         : result.emailSent
           ? t("Your VLS2026 spot is confirmed. Please check your inbox.", "Chỗ tham dự VLS2026 của bạn đã được xác nhận. Vui lòng kiểm tra hộp thư.")
           : t("Your registration is saved, but we could not send the confirmation email. Please contact marketing@tubudd.com.", "Đăng ký của bạn đã được lưu, nhưng chúng tôi chưa thể gửi email xác nhận. Vui lòng liên hệ marketing@tubudd.com."));

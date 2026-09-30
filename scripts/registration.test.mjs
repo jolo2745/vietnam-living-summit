@@ -48,16 +48,30 @@ function request(body, options = {}) {
 function environment() {
   const sent = [];
   const records = new Map();
+  const partnerRecords = new Map();
   const database = {
     records,
+    partnerRecords,
     prepare(sql) {
       return {
         bind(...values) {
           return {
             async run() {
               if (sql.startsWith("INSERT OR IGNORE")) {
-                if (records.has(values[0])) return { success: true, meta: { changes: 0 } };
-                records.set(values[0], { email: values[2], fullName: values[1], confirmationStatus: "pending", interests: JSON.parse(values[7]) });
+                const target = sql.includes("partner_enquiries") ? partnerRecords : records;
+                if (target.has(values[0])) return { success: true, meta: { changes: 0 } };
+                if (target === partnerRecords) {
+                  target.set(values[0], { email: values[2], company_name: values[4], team_notification_status: "pending", confirmation_status: "pending" });
+                } else {
+                  target.set(values[0], { email: values[2], fullName: values[1], confirmationStatus: "pending", interests: JSON.parse(values[7]) });
+                }
+                return { success: true, meta: { changes: 1 } };
+              }
+              if (sql.startsWith("UPDATE partner_enquiries")) {
+                const record = partnerRecords.get(values[2]);
+                const prefix = sql.includes("team_notification_status") ? "team_notification" : "confirmation";
+                record[`${prefix}_status`] = values[0];
+                record[`${prefix}_message_id`] = values[1];
                 return { success: true, meta: { changes: 1 } };
               }
               if (sql.startsWith("UPDATE attendee_registrations")) {
@@ -69,6 +83,7 @@ function environment() {
               throw new Error("Unexpected SQL statement");
             },
             async first() {
+              if (sql.includes("partner_enquiries")) return partnerRecords.get(values[0]) ?? null;
               const record = records.get(values[0]);
               return record ? { email: record.email, confirmation_status: record.confirmationStatus } : null;
             },
@@ -80,6 +95,7 @@ function environment() {
   return {
     sent,
     records,
+    partnerRecords,
     env: {
       EMAIL_FROM: "hello@vietnam-living-summit.com",
       REGISTRATION_NOTIFY_TO: "marketing@tubudd.com",
@@ -109,9 +125,12 @@ test("attendee registration is stored and sends the requested confirmation", asy
 });
 
 test("partner enquiry sends the selected partnership type", async () => {
-  const { sent, env } = environment();
+  const { sent, partnerRecords, env } = environment();
   const response = await handleRegistrationRequest(request(partner), env);
   assert.equal(response.status, 200);
+  assert.equal(partnerRecords.size, 1);
+  assert.equal([...partnerRecords.values()][0].team_notification_status, "sent");
+  assert.equal([...partnerRecords.values()][0].confirmation_status, "sent");
   assert.match(sent[0].text, /Partnership interests: Exhibiting/);
   assert.equal(sent[1].to.email, partner.email);
   assert.equal(sent[1].subject, "Welcome to the Vietnam Living Summit Alliance!");
@@ -124,6 +143,36 @@ test("partner enquiry sends the selected partnership type", async () => {
   assert.match(sent[1].html, /mailto:marketing@tubudd.com/);
   assert.ok(!sent[1].text.includes("[Name]"));
   assert.ok(!sent[1].text.includes("[X]"));
+});
+
+test("partner retry uses its stored delivery status without sending twice", async () => {
+  const { sent, partnerRecords, env } = environment();
+  const body = { ...partner, requestId: crypto.randomUUID() };
+  assert.equal((await handleRegistrationRequest(request(body), env)).status, 200);
+  assert.equal((await handleRegistrationRequest(request(body), env)).status, 200);
+  assert.equal(partnerRecords.size, 1);
+  assert.equal(sent.length, 2);
+});
+
+test("partner storage failure sends no email", async () => {
+  const { sent, env } = environment();
+  delete env.REGISTRATIONS;
+  assert.equal((await handleRegistrationRequest(request(partner), env)).status, 503);
+  assert.equal(sent.length, 0);
+});
+
+test("saved partner enquiry reports a failed confirmation accurately", async () => {
+  const { sent, partnerRecords, env } = environment();
+  env.EMAIL.send = async email => {
+    if (email.to.email === partner.email) throw new Error("simulated send failure");
+    sent.push(email);
+    return { messageId: "team-1" };
+  };
+  const response = await handleRegistrationRequest(request(partner), env);
+  assert.deepEqual(await response.json(), { sent: true, emailSent: false });
+  assert.equal([...partnerRecords.values()][0].team_notification_status, "sent");
+  assert.equal([...partnerRecords.values()][0].confirmation_status, "failed");
+  assert.equal(sent.length, 1);
 });
 
 test("partner acknowledgement follows the selected site language", async () => {
