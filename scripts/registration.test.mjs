@@ -112,6 +112,8 @@ test("partner enquiry sends the selected partnership type", async () => {
   assert.equal(response.status, 200);
   assert.match(sent[0].text, /Partnership interests: Exhibiting/);
   assert.equal(sent[1].to.email, partner.email);
+  assert.equal(sent[1].subject, "We received your partnership enquiry");
+  assert.notEqual(sent[1].subject, "Your VLS2026 Spot is Confirmed");
 });
 
 test("invalid or cross-site submissions send no email", async () => {

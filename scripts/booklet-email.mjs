@@ -1,8 +1,6 @@
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_REQUESTS = 5;
 const BOOKLET_PATH = "/downloads/TUBUDD-2026-Vietnam-Relocation-Guide.pdf";
-const BOOKLET_FILENAME = "TUBUDD-2026-Vietnam-Relocation-Guide.pdf";
-const MAX_ATTACHMENT_BYTES = 3 * 1024 * 1024;
 const attempts = new Map();
 
 function json(body, status = 200) {
@@ -53,8 +51,9 @@ async function subscribeToMailchimp(email, env) {
   throw new Error(`Mailchimp subscription failed (${response.status}): ${result?.detail || result?.title || "Unknown error"}`);
 }
 
-export function createBookletEmailHtml(registrationUrl) {
+export function createBookletEmailHtml(registrationUrl, downloadUrl) {
   const safeRegistrationUrl = escapeHtml(registrationUrl);
+  const safeDownloadUrl = escapeHtml(downloadUrl);
 
   return `<!doctype html>
 <html lang="en">
@@ -83,7 +82,7 @@ export function createBookletEmailHtml(registrationUrl) {
   </head>
   <body style="background-color:#edf6fb;color:#182838;font-family:Arial,Helvetica,sans-serif;">
     <div style="display:none;font-size:1px;color:#edf6fb;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-      Your Vietnam relocation guide is attached and ready to explore.
+      Your Vietnam relocation guide is ready to download.
     </div>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background-color:#edf6fb;">
       <tr>
@@ -101,23 +100,23 @@ export function createBookletEmailHtml(registrationUrl) {
             <tr>
               <td class="content" style="padding:38px 42px 42px;background-color:#ffffff;">
                 <p style="margin:0 0 18px;font-size:17px;line-height:27px;color:#182838;">Thank you for your interest in Vietnam Living Summit 2026.</p>
-                <p style="margin:0 0 28px;font-size:17px;line-height:27px;color:#536471;">Your relocation guide is attached to this email. Inside, you’ll find practical guidance to help you prepare for living in Vietnam.</p>
+                <p style="margin:0 0 28px;font-size:17px;line-height:27px;color:#536471;">Your relocation guide is ready to download. Inside, you’ll find practical guidance to help you prepare for living in Vietnam.</p>
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin:0 0 30px;background-color:#edf6fb;border:1px solid #d7e8f2;border-radius:16px;">
                   <tr>
                     <td style="padding:20px 22px;">
-                      <p style="margin:0 0 5px;font-size:11px;line-height:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#b64012;">Attached guide</p>
+                      <p style="margin:0 0 5px;font-size:11px;line-height:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#b64012;">Free guide</p>
                       <p style="margin:0;font-size:16px;line-height:23px;font-weight:700;color:#182838;">The 2026 Relocate to Vietnam Guide &amp; Checklist</p>
                     </td>
                   </tr>
                 </table>
-                <p style="margin:0 0 18px;font-size:16px;line-height:25px;color:#536471;">Ready to join us? Reserve your place at the summit.</p>
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td style="border-radius:999px;background-color:#ff611b;">
-                      <a class="cta" href="${safeRegistrationUrl}" target="_blank" style="display:inline-block;padding:16px 26px;border:1px solid #ff611b;border-radius:999px;font-size:15px;line-height:18px;font-weight:700;text-decoration:none;color:#ffffff;background-color:#ff611b;">Register for the summit&nbsp;&nbsp;→</a>
+                      <a class="cta" href="${safeDownloadUrl}" target="_blank" style="display:inline-block;padding:16px 26px;border:1px solid #ff611b;border-radius:999px;font-size:15px;line-height:18px;font-weight:700;text-decoration:none;color:#ffffff;background-color:#ff611b;">Download the guide&nbsp;&nbsp;→</a>
                     </td>
                   </tr>
                 </table>
+                <p style="margin:28px 0 0;font-size:16px;line-height:25px;color:#536471;">Ready to join us? <a href="${safeRegistrationUrl}" target="_blank" style="color:#b64012;text-decoration:underline;">Reserve your place at the summit</a>.</p>
               </td>
             </tr>
             <tr>
@@ -169,17 +168,14 @@ export async function handleBookletRequest(request, env) {
   if (!env.EMAIL || !env.EMAIL_FROM || !registrationUrl || !env.ASSETS) {
     return json({ message: "Email delivery is still being connected. Please try again soon." }, 503);
   }
+  const downloadUrl = new URL(BOOKLET_PATH, registrationUrl).toString();
 
   const bookletResponse = await env.ASSETS.fetch(new URL(BOOKLET_PATH, request.url));
   if (!bookletResponse.ok) {
     console.error("Booklet asset unavailable", bookletResponse.status);
     return json({ message: "The booklet is temporarily unavailable. Please try again." }, 503);
   }
-  const bookletContent = await bookletResponse.arrayBuffer();
-  if (bookletContent.byteLength > MAX_ATTACHMENT_BYTES) {
-    console.error("Booklet attachment is too large", bookletContent.byteLength);
-    return json({ message: "The booklet is temporarily unavailable. Please try again." }, 503);
-  }
+  await bookletResponse.body?.cancel();
 
   let sendResult;
   try {
@@ -187,14 +183,8 @@ export async function handleBookletRequest(request, env) {
       from: { email: env.EMAIL_FROM, name: "Vietnam Living Summit" },
       to: { email, name: "" },
       subject: "Your Vietnam Relocation Roadmap",
-      html: createBookletEmailHtml(registrationUrl),
-      text: `Your Vietnam Relocation Roadmap\n\nYour relocation guide booklet is attached to this email.\n\nRegister for the event: ${registrationUrl}`,
-      attachments: [{
-        content: bookletContent,
-        filename: BOOKLET_FILENAME,
-        type: "application/pdf",
-        disposition: "attachment",
-      }],
+      html: createBookletEmailHtml(registrationUrl, downloadUrl),
+      text: `Your Vietnam Relocation Roadmap\n\nDownload your relocation guide: ${downloadUrl}\n\nRegister for the event: ${registrationUrl}`,
     });
   } catch (error) {
     console.error("Booklet email delivery failed", error?.code, error?.message);
