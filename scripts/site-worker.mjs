@@ -14,20 +14,6 @@ export default {
       url.pathname = "/";
       return Response.redirect(url, 308);
     }
-    if (url.pathname === "/robots.txt") {
-      const original = await env.ASSETS.fetch(request);
-      if (!original.ok) return original;
-      const text = await original.text();
-      const headers = new Headers(original.headers);
-      headers.delete("Content-Length");
-      headers.delete("ETag");
-      headers.set("Content-Type", "text/plain; charset=utf-8");
-      const sitemap = "Sitemap: https://vietnam-living-summit.com/sitemap.xml";
-      return new Response(`${text.trimEnd()}\n${text.includes(sitemap) ? "" : `${sitemap}\n`}`, {
-        status: original.status,
-        headers,
-      });
-    }
     return env.ASSETS.fetch(request);
   },
 };

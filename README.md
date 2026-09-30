@@ -22,7 +22,7 @@ npm run deploy
 
 ## Search discovery
 
-English pages are `/` and `/partners`; Vietnamese pages are `/vi` and `/vi/partners`. Each has its own title, description, canonical URL, and language alternate. The production Worker redirects `www` to the apex domain and adds the sitemap address to Cloudflare's existing `robots.txt` response. The shadow Worker keeps all preview pages out of search results.
+English pages are `/` and `/partners`; Vietnamese pages are `/vi` and `/vi/partners`. Each has its own title, description, canonical URL, and language alternate. The production Worker redirects `www` to the apex domain. `public/robots.txt` points to the sitemap; Cloudflare may prepend its content signals policy when serving it. The shadow Worker keeps all preview pages out of search results.
 
 `public/sitemap.xml` lists the four public page URLs. Update it when an indexable page is added or removed, and keep redirected paths out. The public IndexNow verification file is `public/c853848d524236ffc3d5b8fcc5f42167.txt`; it can be used to notify Bing and other IndexNow participants when pages change. Google discovers the sitemap from `robots.txt`; a verified Search Console property also allows direct submission and indexing reports.
 
