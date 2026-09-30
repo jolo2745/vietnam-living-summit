@@ -141,6 +141,18 @@ function attendeeConfirmation(name) {
   };
 }
 
+function partnerAcknowledgement(registration) {
+  const vietnamese = registration.language === "vi";
+  const body = vietnamese
+    ? `Chào ${registration.fullName},\n\nCảm ơn bạn đã quan tâm đến việc hợp tác cùng Vietnam Living Summit 2026. Chúng tôi đã nhận được thông tin bạn gửi về ${registration.companyName}.\n\nBan tổ chức sẽ xem xét và liên hệ với bạn về các bước tiếp theo. Nếu bạn có câu hỏi hoặc muốn bổ sung thông tin trong lúc chờ phản hồi, hãy trả lời email này.\n\nTrân trọng,\nThuy Anh\nBan Tổ chức VLS2026`
+    : `Hi, ${registration.fullName}\n\nThank you for your interest in partnering with Vietnam Living Summit 2026. We've received your enquiry and the details you shared about ${registration.companyName}.\n\nOur organizing team will review them and get back to you about the next steps. If you have any questions or would like to add anything in the meantime, just reply to this email.\n\nBest,\nThuy Anh\nVLS2026 Organizing Team`;
+  return {
+    subject: vietnamese ? "VLS2026 đã nhận được đề nghị hợp tác của bạn" : "We've Received Your VLS2026 Partnership Enquiry",
+    text: body,
+    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#132d3e">${escapeHtml(body).replaceAll("\n", "<br>")}</div>`,
+  };
+}
+
 async function saveAttendee(database, id, registration) {
   const result = await database.prepare(`INSERT OR IGNORE INTO attendee_registrations (
     id, full_name, email, phone, nationality, residency_status, role, interests_json,
@@ -254,18 +266,11 @@ export async function handleRegistrationRequest(request, env) {
   if (!result?.messageId) return json({ message: "We could not confirm your registration right now." }, 502);
 
   try {
-    const vietnamese = registration.language === "vi";
-    const subject = vietnamese ? "Đã nhận thông tin hợp tác của bạn" : "We received your partnership enquiry";
-    const followUp = vietnamese ? "thông tin hợp tác" : "partnership enquiry";
-    const acknowledgement = vietnamese
-      ? `Chào ${registration.fullName},\n\nCảm ơn bạn đã quan tâm đến Vietnam Living Summit 2026. Chúng tôi đã nhận được ${followUp} của bạn và sẽ liên hệ về các bước tiếp theo.\n\nĐội ngũ Vietnam Living Summit`
-      : `Hi ${registration.fullName},\n\nThank you for your interest in Vietnam Living Summit 2026. We received your ${followUp} and will follow up with the next steps.\n\nVietnam Living Summit team`;
     await env.EMAIL.send({
-      from: { email: env.EMAIL_FROM, name: "Vietnam Living Summit" },
+      from: { email: env.EMAIL_FROM, name: "Thuy Anh | VLS2026" },
       to: { email: registration.email, name: registration.fullName },
-      subject,
-      text: acknowledgement,
-      html: `<div style="white-space:pre-line;font-family:Arial,sans-serif;line-height:1.6">${escapeHtml(acknowledgement).replaceAll("\n", "<br>")}</div>`,
+      replyTo: { email: env.EMAIL_FROM, name: "Thuy Anh" },
+      ...partnerAcknowledgement(registration),
     });
   } catch (error) {
     console.error("Registration acknowledgement failed", error?.code, error?.message);
