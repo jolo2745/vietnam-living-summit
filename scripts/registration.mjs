@@ -143,15 +143,76 @@ function attendeeConfirmation(name) {
 
 function partnerConfirmation(registration, followUpDays, contactEmail) {
   const vietnamese = registration.language === "vi";
-  const body = vietnamese
-    ? `Kính gửi ${registration.fullName},\n\nCảm ơn quý đối tác đã tham gia Liên minh Vietnam Living Summit! Chúng tôi rất vui khi có ${registration.companyName} đồng hành cùng chúng tôi xây dựng một hệ sinh thái đối tác dịch vụ uy tín, dài hạn dành cho người nước ngoài tại Việt Nam.\n\nLiên minh không chỉ đồng hành cùng nhau trong sự kiện lần này mà là khởi đầu cho một mối quan hệ hợp tác lâu dài, nơi chúng ta kết nối cộng đồng và cùng nhau phát triển trong việc phục vụ người nước ngoài, nhà đầu tư và tất cả những ai đang xây dựng cuộc sống tại đây.\n\nĐăng ký tham gia liên minh của quý công ty đã được xác nhận\nYêu cầu tham gia liên minh của bạn đã được tiếp nhận và xử lý.\n\n--------------------------\nVietnam Living Summit 2026\n📅 Ngày 30 tháng 10, 2026\n📍 Hà Nội\n\n--------------------------\nCác bước tiếp theo sau email này:\nBạn sẽ được thêm vào nhóm Zalo chung của Liên minh, nơi chúng tôi sẽ chia sẻ các bước tiếp theo và cùng phối hợp\nĐội ngũ chúng tôi sẽ liên hệ trong vòng ${followUpDays} ngày làm việc để trao đổi cụ thể về cách hợp tác — tại sự kiện và sau đó\nBạn sẽ nhận được thông tin chi tiết và vé sự kiện gần ngày diễn ra\n\nCó thắc mắc?\nLiên hệ với chúng tôi bất cứ lúc nào:\n📞 Ms. Thuý Anh — +84 966 743 471\n✉️ ${contactEmail}\n\nRất mong được cùng nhau xây dựng một liên minh bền vững và tạo ra nhiều giá trị.\nTrân trọng,\nThuy Anh\nVLS 2026 Organizing Team`
-    : `Dear ${registration.fullName},\n\nThank you for joining the Vietnam Living Summit Alliance! We're excited to have ${registration.companyName} on board as we build a long-term ecosystem of trusted service partners for foreign residents in Vietnam.\n\nThe Alliance isn't just about standing together for this one event — it's the start of an ongoing partnership, where we connect our communities and grow together in serving expats, investors, and everyone building a life here.\n\nYour alliance registration has been confirmed\nYour request to join the Alliance has been received and processed.\n\n--------------------------\nVietnam Living Summit 2026\n📅 October 30, 2026\n📍 Hanoi\n\n--------------------------\nWhat happens next:\nYou'll be added to our Alliance Zalo group, where we'll share next steps and coordinate together\nOur team will reach out within ${followUpDays} business days to walk through how we'll collaborate — at the event and beyond\nYou'll receive event details and passes closer to the date\n\nHave questions?\nFeel free to reach out anytime:\n📞 Ms. Thuý Anh — +84 966 743 471\n✉️ ${contactEmail}\n\nWe look forward to building a lasting alliance together and creating great value along the way.\nWarm regards,\nThuy Anh\nVLS 2026 Organizing Team`;
+  const copy = vietnamese ? {
+    subject: "Bạn đã đăng ký tham gia thành công Liên minh Vietnam Living Summit",
+    greeting: `Kính gửi ${registration.fullName},`,
+    intro: `Cảm ơn quý đối tác đã tham gia Liên minh Vietnam Living Summit. Chúng tôi rất vui khi có ${registration.companyName} cùng xây dựng mạng lưới đối tác dịch vụ uy tín dành cho người nước ngoài tại Việt Nam.`,
+    alliance: "Đây là khởi đầu của mối quan hệ hợp tác lâu dài. Cùng nhau, chúng ta sẽ kết nối cộng đồng và hỗ trợ tốt hơn cho người nước ngoài, nhà đầu tư và những người đang xây dựng cuộc sống tại đây.",
+    confirmation: "Đăng ký tham gia Liên minh của quý công ty đã được xác nhận.",
+    date: "30 tháng 10 năm 2026",
+    location: "Hà Nội",
+    nextHeading: "Các bước tiếp theo",
+    steps: [
+      "Chúng tôi sẽ thêm quý đối tác vào nhóm Zalo của Liên minh để phối hợp các bước tiếp theo.",
+      `Đội ngũ sẽ liên hệ trong vòng ${followUpDays} ngày làm việc để trao đổi về cách hợp tác tại sự kiện và sau đó.`,
+      "Quý đối tác sẽ nhận thông tin chi tiết và vé sự kiện gần ngày diễn ra.",
+    ],
+    contactHeading: "Có thắc mắc?",
+    closing: "Rất mong được hợp tác cùng quý đối tác.",
+    signOff: "Trân trọng,",
+  } : {
+    subject: "Welcome to the Vietnam Living Summit Alliance!",
+    greeting: `Dear ${registration.fullName},`,
+    intro: `Thank you for joining the Vietnam Living Summit Alliance. We're pleased to welcome ${registration.companyName} to a network of trusted service partners for foreign residents in Vietnam.`,
+    alliance: "This is the beginning of a long-term partnership. Together, we'll connect our communities and better support expats, investors, and others building a life here.",
+    confirmation: "Your Alliance registration is confirmed.",
+    date: "30 October 2026",
+    location: "Hanoi",
+    nextHeading: "What happens next",
+    steps: [
+      "We'll add you to the Alliance Zalo group to coordinate next steps.",
+      `Our team will contact you within ${followUpDays} business days to discuss working together at the event and beyond.`,
+      "We'll send event details and passes closer to the date.",
+    ],
+    contactHeading: "Questions?",
+    closing: "We look forward to working with you.",
+    signOff: "Warm regards,",
+  };
+  const textBody = [
+    copy.greeting, "", copy.intro, "", copy.alliance, "", copy.confirmation, "",
+    "Vietnam Living Summit 2026", `${copy.date} · ${copy.location}`, "",
+    copy.nextHeading, ...copy.steps.map((step, index) => `${index + 1}. ${step}`), "",
+    copy.contactHeading, `Ms. Thuý Anh — +84 966 743 471`, contactEmail, "",
+    copy.closing, "", copy.signOff, "Thuy Anh", "VLS 2026 Organizing Team",
+  ].join("\n");
+  const stepsHtml = copy.steps.map((step, index) => `
+    <tr><td valign="top" style="padding:0 12px 14px 0;color:#d75c28;font-weight:700;">${index + 1}.</td>
+    <td style="padding:0 0 14px;line-height:1.55;">${escapeHtml(step)}</td></tr>`).join("");
   return {
-    subject: vietnamese
-      ? "Bạn đã đăng ký tham gia thành công Liên minh Vietnam Living Summit"
-      : "Welcome to the Vietnam Living Summit Alliance!",
-    text: body,
-    html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#132d3e">${escapeHtml(body).replaceAll("\n", "<br>")}</div>`,
+    subject: copy.subject,
+    text: textBody,
+    html: `<!doctype html><html lang="${vietnamese ? "vi" : "en"}"><body style="margin:0;padding:0;background:#f4f7f9;color:#243746;font-family:Arial,Helvetica,sans-serif;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f7f9;"><tr><td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#ffffff;border:1px solid #e3eaf0;border-top:4px solid #ef6b35;border-radius:12px;">
+          <tr><td style="padding:28px 28px 4px;">
+            <p style="margin:0 0 14px;color:#526979;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Vietnam Living Summit 2026</p>
+            <h1 style="margin:0 0 24px;color:#1b3447;font-size:24px;line-height:1.3;">${escapeHtml(copy.subject)}</h1>
+            <p style="margin:0 0 16px;line-height:1.6;">${escapeHtml(copy.greeting)}</p>
+            <p style="margin:0 0 16px;line-height:1.6;">${escapeHtml(copy.intro)}</p>
+            <p style="margin:0 0 24px;line-height:1.6;">${escapeHtml(copy.alliance)}</p>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 26px;background:#f4f8fa;border-left:3px solid #ef6b35;"><tr><td style="padding:16px 18px;color:#1b3447;font-weight:700;line-height:1.5;">${escapeHtml(copy.confirmation)}</td></tr></table>
+            <p style="margin:0 0 4px;color:#1b3447;font-weight:700;">Vietnam Living Summit 2026</p>
+            <p style="margin:0 0 24px;line-height:1.6;">${escapeHtml(copy.date)} · ${escapeHtml(copy.location)}</p>
+            <h2 style="margin:0 0 14px;color:#1b3447;font-size:17px;line-height:1.4;">${escapeHtml(copy.nextHeading)}</h2>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 20px;">${stepsHtml}</table>
+            <p style="margin:0 0 8px;color:#1b3447;font-weight:700;">${escapeHtml(copy.contactHeading)}</p>
+            <p style="margin:0 0 24px;line-height:1.7;">Ms. Thuý Anh · <a href="tel:+84966743471" style="color:#a94b24;">+84 966 743 471</a><br><a href="mailto:${escapeHtml(contactEmail)}" style="color:#a94b24;">${escapeHtml(contactEmail)}</a></p>
+            <p style="margin:0 0 20px;line-height:1.6;">${escapeHtml(copy.closing)}</p>
+            <p style="margin:0 0 28px;line-height:1.6;">${escapeHtml(copy.signOff)}<br>Thuy Anh<br>VLS 2026 Organizing Team</p>
+          </td></tr>
+        </table>
+      </td></tr></table>
+    </body></html>`,
   };
 }
 
