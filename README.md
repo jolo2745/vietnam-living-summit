@@ -26,6 +26,8 @@ English pages are `/` and `/partners`; Vietnamese pages are `/vi` and `/vi/partn
 
 `public/sitemap.xml` lists the four public page URLs. Update it when an indexable page is added or removed, and keep redirected paths out. The public IndexNow verification file is `public/c853848d524236ffc3d5b8fcc5f42167.txt`; it can be used to notify Bing and other IndexNow participants when pages change. Google discovers the sitemap from `robots.txt`; a verified Search Console property also allows direct submission and indexing reports.
 
+The attendee pages render `WebSite` and `Event` JSON-LD in their exported HTML. `app/components/EventStructuredData.tsx` includes the confirmed date, times, organizers, and free registration, with a description and registration link matching the page language. The venue is undecided, so `location` is intentionally omitted. Add the confirmed venue name and street address when announced; Google event rich-result validation will report the missing location until then. Do not use the footer's office address as the event venue.
+
 ## Roadmap booklet email
 
 The `/api/booklet` Worker endpoint sends the download-link email through the Cloudflare Email Sending binding named `EMAIL`. It sends from `hello@vietnam-living-summit.com` with no reply-to address and includes the event-registration link. Booklet requests are not stored in D1.
