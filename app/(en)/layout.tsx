@@ -8,10 +8,12 @@ import "@fontsource/be-vietnam-pro/800.css";
 import "@fontsource/be-vietnam-pro/900.css";
 import "../globals.css";
 import { LanguageProvider } from "../i18n";
+import { siteIcons } from "../seo";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vietnam-living-summit.com"),
   applicationName: "Vietnam Living Summit 2026",
+  icons: siteIcons,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
