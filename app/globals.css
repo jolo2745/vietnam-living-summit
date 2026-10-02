@@ -88,7 +88,7 @@ em { color:var(--amber); font-family:var(--font-numerals); font-weight:400; }
 .footer-heading { min-height:24px; margin-bottom:12px; color:var(--peach)!important; font-size:12px; font-weight:800; letter-spacing:.13em; line-height:1.4; text-transform:uppercase; text-decoration:underline; text-decoration-color:rgba(220,101,50,.86); text-decoration-thickness:1px; text-underline-offset:7px; }
 .footer-column > a:not(.footer-heading) { max-width:245px; }
 .footer-social a span,.footer-contact a span { color:var(--orange-soft); }
-@media(max-width:1160px){
+@media(max-width:1240px){
   .site-header-inner { height:70px; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:13px; }
   .site-logo { height:48px; }
   .desktop-nav,.site-header .header-actions { display:none; }

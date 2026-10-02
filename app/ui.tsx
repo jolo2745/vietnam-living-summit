@@ -109,7 +109,7 @@ export function Header({ active }: { active?: "relocate" | "partners" }) {
     };
 
     const handleResize = () => {
-      if (window.innerWidth > 1160) setIsMenuOpen(false);
+      if (window.innerWidth > 1240) setIsMenuOpen(false);
     };
 
     window.addEventListener("keydown", handleKeyDown);

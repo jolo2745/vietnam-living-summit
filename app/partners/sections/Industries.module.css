@@ -156,6 +156,7 @@
 
 .grid h3 {
   margin: 0 0 10px;
+  overflow-wrap: anywhere;
   color: #182838;
   font: 400 clamp(19px, 1.45vw, 24px)/1.08 var(--font-numerals);
 }

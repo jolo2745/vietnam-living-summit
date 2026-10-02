@@ -68,6 +68,7 @@
 
 .grid h3 {
   margin: auto 0 20px;
+  overflow-wrap: anywhere;
   color: var(--ink);
   font-family: var(--font-numerals);
   font-size: clamp(26px, 2vw, 33px);
